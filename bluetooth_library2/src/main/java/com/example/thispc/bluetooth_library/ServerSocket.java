@@ -58,7 +58,6 @@ public class ServerSocket {
                             b++;
                     }
                     if (b == 0) {
-
                         a[a1] = bluetoothSocket;
                         check = false;
                         a1++;

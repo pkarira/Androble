@@ -8,6 +8,7 @@ public class BluetoothManager {
     String Type=null;
     Discovery d=new Discovery();
     ServerSocket s=new ServerSocket();
+    ClientSocket c=new ClientSocket();
     public void Type(String t)
     {
         this.Type=t;
@@ -27,7 +28,7 @@ public class BluetoothManager {
     }
     public void connectTo(String s)
     {
-
+        c.startConnection(d.bluetoothAdapter,s);
 
     }
 
