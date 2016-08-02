@@ -9,6 +9,7 @@ public class BluetoothManager {
     Discovery d=new Discovery();
     ServerSocket s=new ServerSocket();
     ClientSocket c=new ClientSocket();
+    SocketManager sm;
     public void Type(String t)
     {
         this.Type=t;
@@ -23,12 +24,15 @@ public class BluetoothManager {
         if(Type.equalsIgnoreCase("client"))
         {
             //function for retuning list
-
         }
     }
     public void connectTo(String s)
     {
         c.startConnection(d.bluetoothAdapter,s);
+
+    }
+    public void sendText(String s)
+    {
 
     }
 
