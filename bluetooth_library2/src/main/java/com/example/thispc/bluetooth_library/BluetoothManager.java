@@ -40,8 +40,11 @@ public class BluetoothManager {
              c.write(s);
         }
     }
-    public void sendText(String s,int id)
+    public void sendText(String s1,int id)
     {
-
+       if(id<=(s.a1+1))
+       {
+           s.write(s1,id);
+       }
     }
 }
