@@ -15,6 +15,9 @@ public class ClientSocket {
     public ArrayList<UUID> mUuids;
     public BluetoothAdapter bluetoothAdapter;
     ConnectingThread ct;
+    String check=null;
+    SocketManager sm;
+    BluetoothSocket finalBluetoothSocket=null;
     public void startConnection(BluetoothAdapter a,String s)
     {
         bluetoothAdapter=a;
@@ -41,8 +44,6 @@ public class ClientSocket {
 
             BluetoothSocket temp = null;
             bluetoothDevice = device;
-
-            // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 temp = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
             } catch (IOException e) {
@@ -50,7 +51,6 @@ public class ClientSocket {
             }
             bluetoothSocket = temp;
         }
-
         public void run() {
             bluetoothAdapter.cancelDiscovery();
 
@@ -66,10 +66,9 @@ public class ClientSocket {
             }
 
             if (bluetoothSocket!= null && bluetoothDevice != null) {
-               // return bluetoothSocket;
-
+                check="connected";
+                connected(bluetoothSocket);
             }
-
         }
         public void cancel() {
             try {
@@ -79,5 +78,16 @@ public class ClientSocket {
             }
         }
     }
-
+    public void connected(BluetoothSocket bluetoothSocket)
+    {
+        sm=new SocketManager(bluetoothSocket);
+        finalBluetoothSocket=bluetoothSocket;
+    }
+    public void write(String s)
+    {
+        if(finalBluetoothSocket!= null)
+        {
+            sm.writetoClient(s.getBytes());
+        }
+    }
 }

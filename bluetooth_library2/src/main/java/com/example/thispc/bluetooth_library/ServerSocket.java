@@ -27,8 +27,6 @@ public class ServerSocket {
         mUuids.add(UUID.fromString("a81d6504-4536-49ee-a475-7d96d09439e4"));
         t = new ListeningThread();
         t.start();
-        bluetoothAdapter=bluetoothAdapter1;
-        a = new BluetoothSocket[4];
     }
     private class ListeningThread extends Thread {
         BluetoothServerSocket bluetoothServerSocket;
