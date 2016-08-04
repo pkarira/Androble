@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observer;
 import java.util.UUID;
 
 /**

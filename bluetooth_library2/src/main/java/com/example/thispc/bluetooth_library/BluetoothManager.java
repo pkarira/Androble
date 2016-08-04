@@ -14,7 +14,7 @@ public class BluetoothManager extends Activity{
     BluetoothSocket SocketForClient;
     ServerSocket s=new ServerSocket();
     ClientSocket c=new ClientSocket();
-    SocketManager sm;
+    public static Object recieve_msg;
     Boolean bn=true;
     final long end = System.nanoTime() + 30 * 1000 * 1000 * 1000L;
     int loop = 1;
@@ -25,7 +25,11 @@ public class BluetoothManager extends Activity{
     public void scanClients()
     {
         d.onBluetooth();
-            s.startConnection(d.bluetoothAdapter);
+        s.startConnection(d.bluetoothAdapter);
+    }
+    public void setObject(Object myObject)
+    {
+        recieve_msg=myObject;
     }
     public ArrayAdapter<String> scanServer()
     {
@@ -39,7 +43,7 @@ public class BluetoothManager extends Activity{
            }
         do {
             for (int i=0; i<loop; ++i) {
-                System.out.println("pulkit");
+
             }
             loop++;
         } while (System.nanoTime() < end);
