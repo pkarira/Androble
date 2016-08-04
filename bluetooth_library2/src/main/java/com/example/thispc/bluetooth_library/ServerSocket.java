@@ -26,6 +26,7 @@ public class ServerSocket {
         mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
         mUuids.add(UUID.fromString("e442e09a-51f3-4a7b-91cb-f638491d1412"));
         mUuids.add(UUID.fromString("a81d6504-4536-49ee-a475-7d96d09439e4"));
+        bluetoothAdapter=bluetoothAdapter1;
         arraysm=new SocketManager[4];
         t = new ListeningThread();
         t.start();
@@ -49,7 +50,6 @@ public class ServerSocket {
                 while (check) {
                     try {
                         bluetoothSocket = bluetoothServerSocket.accept();
-
                     } catch (IOException e) {
                         break;
                     }
@@ -63,6 +63,7 @@ public class ServerSocket {
                         connected(bluetoothSocket);
                         SocketManager sm=new SocketManager(a[a1]);
                         arraysm[a1]=sm;
+                        sm.write(("?"+(a1+1)).getBytes());
                         a1++;
                     }
                 }
@@ -76,7 +77,7 @@ public class ServerSocket {
     }
     public void write(String s,int n)
     {
-        arraysm[n-1].writetoServer(s.getBytes());
+        arraysm[n-1].write(s.getBytes());
     }
     public synchronized BluetoothSocket connected(BluetoothSocket socket) {
         return socket;

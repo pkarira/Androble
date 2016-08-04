@@ -20,7 +20,8 @@ public class Discovery extends Activity {
     private static final int Finished_Activity = 3;
     private static final int DISCOVERABLE_DURATION = 300;
     public BluetoothAdapter bluetoothAdapter;
-    private ArrayAdapter adapter= new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+    Boolean discoverymode=false;
+    public ArrayAdapter adapter= new ArrayAdapter(this, android.R.layout.simple_list_item_1);
     public void onBluetooth()
     {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -39,7 +40,7 @@ public class Discovery extends Activity {
             }
         } else if (requestCode == DISCOVERABLE_BT_REQUEST_CODE) {
             if (resultCode == DISCOVERABLE_DURATION) {
-              //  return "Your device is now discoverable for Server";
+                   discoverymode=true;
             } else {
                // return "Fail to enable discoverable mode.";
             }
@@ -55,13 +56,11 @@ public class Discovery extends Activity {
             return "Discovery failed to start.";
         }
     }
-
     protected void makeDiscoverable() {
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, DISCOVERABLE_DURATION);
         startActivityForResult(discoverableIntent, DISCOVERABLE_BT_REQUEST_CODE);
     }
-
     @Override
     protected void onResume() {
         super.onResume();

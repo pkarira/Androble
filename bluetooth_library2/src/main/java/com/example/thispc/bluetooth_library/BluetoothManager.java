@@ -1,11 +1,13 @@
 package com.example.thispc.bluetooth_library;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
+import android.widget.ArrayAdapter;
 
 /**
  * Created by this pc on 02-08-2016.
  */
-public class BluetoothManager {
+public class BluetoothManager extends Activity{
 
     String Type=null;
     Discovery d=new Discovery();
@@ -13,22 +15,37 @@ public class BluetoothManager {
     ServerSocket s=new ServerSocket();
     ClientSocket c=new ClientSocket();
     SocketManager sm;
+    Boolean bn=true;
+    final long end = System.nanoTime() + 30 * 1000 * 1000 * 1000L;
+    int loop = 1;
     public void Type(String t)
     {
        Type=t;
     }
-    public void scanDevices()
+    public void scanClients()
     {
         d.onBluetooth();
-        if(Type.equalsIgnoreCase("server"))
-        {
             s.startConnection(d.bluetoothAdapter);
-        }
-        if(Type.equalsIgnoreCase("client"))
-        {
-            //function for retuning list
-        }
     }
+    public ArrayAdapter<String> scanServer()
+    {
+        d.onBluetooth();
+           while(bn)
+           {
+               if(d.discoverymode==true)
+               {
+                   bn=false;
+               }
+           }
+        do {
+            for (int i=0; i<loop; ++i) {
+                System.out.println("pulkit");
+            }
+            loop++;
+        } while (System.nanoTime() < end);
+          return d.adapter;
+    }
+
     public void connectTo(String s)
     {
         c.startConnection(d.bluetoothAdapter, s);
@@ -39,6 +56,10 @@ public class BluetoothManager {
         {
              c.write(s);
         }
+    }
+    public int totalDevices()
+    {
+         return s.a1;
     }
     public void sendText(String s1,int id)
     {

@@ -17,7 +17,7 @@ public class SocketManager extends Thread {
         private final OutputStream mmOutStream;
         private final BluetoothSocket mBluetoothSocket;
         BluetoothSocket mbluetoothSocket=null;
-
+        int playerid=0;
         public SocketManager(BluetoothSocket socket) {
             mmSocket = socket;
             mBluetoothSocket=socket;
@@ -34,27 +34,27 @@ public class SocketManager extends Thread {
         }
          public void run() {
             byte[] buffer = new byte[1024];
-            int bytes;
-            String score="0";
+            int bytes1=0;
+             int bytes2=0;
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
                     String readMessage = "";
-                    bytes = mmInStream.read(buffer);
-                    readMessage = new String(buffer, 0, bytes);
-
+                    bytes1 = mmInStream.read(buffer);
+                    if(bytes1!=bytes2)
+                    {
+                    readMessage = new String(buffer, 0, bytes1);
+                    if(readMessage.contains("?"))
+                    {
+                        playerid=Integer.parseInt(readMessage.substring(1));
+                    }
+                        bytes2=bytes1;
+                    }
                 } catch (Exception e) {
                 }
             }
         }
-       public void writetoClient(byte[] buffer) {
-           try {
-                mmOutStream.write(buffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    public void writetoServer(byte[] buffer) {
+    public void write(byte[] buffer) {
         try {
             mmOutStream.write(buffer);
         } catch (IOException e) {
@@ -68,5 +68,9 @@ public class SocketManager extends Thread {
 
             }
         }
+    public int id()
+    {
+        return playerid;
+    }
     }
 

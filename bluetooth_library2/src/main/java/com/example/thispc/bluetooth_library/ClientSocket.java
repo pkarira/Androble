@@ -64,7 +64,6 @@ public class ClientSocket {
                     closeException.printStackTrace();
                 }
             }
-
             if (bluetoothSocket!= null && bluetoothDevice != null) {
                 check="connected";
                 connected(bluetoothSocket);
@@ -87,7 +86,7 @@ public class ClientSocket {
     {
         if(finalBluetoothSocket!= null)
         {
-            sm.writetoClient(s.getBytes());
+            sm.write(s.getBytes());
         }
     }
 }
