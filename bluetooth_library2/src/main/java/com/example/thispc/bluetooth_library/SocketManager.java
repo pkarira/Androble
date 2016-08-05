@@ -19,6 +19,7 @@ public class SocketManager extends Thread {
         private final OutputStream mmOutStream;
         private final BluetoothSocket mBluetoothSocket;
         BluetoothSocket mbluetoothSocket=null;
+        public static StringBuilder sb=new StringBuilder();
         int playerid=0;
         receivemsg rm;
         public SocketManager(BluetoothSocket socket) {
@@ -49,6 +50,9 @@ public class SocketManager extends Thread {
                     if(bytes1!=bytes2)
                     {
                     readMessage = new String(buffer, 0, bytes1);
+                        if(readMessage.contains("?"))
+                            sb.append(readMessage.substring(1)+" "+(playerid+1));
+                            playerid++;
                         bytes2=bytes1;
                         rm.call(readMessage);
                     }
@@ -72,7 +76,7 @@ public class SocketManager extends Thread {
         }
     public int id()
     {
-        return playerid;
+        return playerid ;
     }
     }
 class receivemsg extends Observable

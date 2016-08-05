@@ -54,6 +54,7 @@ public class BluetoothManager extends Activity{
     {
         c.startConnection(d.bluetoothAdapter, s);
     }
+
     public void sendText(String s)
     {
         if(c.check.equals(("connected"))&&Type.equalsIgnoreCase("client"))
@@ -61,9 +62,9 @@ public class BluetoothManager extends Activity{
              c.write(s);
         }
     }
-    public int totalDevices()
+    public StringBuilder deviceList()
     {
-         return s.a1;
+         return SocketManager.sb;
     }
     public void sendText(String s1,int id)
     {

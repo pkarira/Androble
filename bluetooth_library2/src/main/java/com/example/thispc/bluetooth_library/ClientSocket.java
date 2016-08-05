@@ -81,6 +81,7 @@ public class ClientSocket {
     public void connected(BluetoothSocket bluetoothSocket)
     {
         sm=new SocketManager(bluetoothSocket);
+        sm.write((bluetoothAdapter.getName()).getBytes());
         finalBluetoothSocket=bluetoothSocket;
     }
     public void write(String s)
