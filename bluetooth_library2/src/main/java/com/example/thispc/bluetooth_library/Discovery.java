@@ -15,21 +15,23 @@ import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Observer;
 
 
-public class Discovery extends Activity {
+abstract public class Discovery extends Activity {
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
     private static final int Finished_Activity = 3;
     private static final int DISCOVERABLE_DURATION = 300;
-    public BluetoothAdapter bluetoothAdapter;
+    public static BluetoothAdapter bluetoothAdapter;
     Boolean discoverymode=false;
-        public ArrayList<String> list;
+    public ArrayList<String> list;
     public receiveadapter ra;
-    public void onBluetooth()
+    public void enableBluetooth()
     {
         ra=new receiveadapter();
        list= new ArrayList<String>();
+        ra.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);

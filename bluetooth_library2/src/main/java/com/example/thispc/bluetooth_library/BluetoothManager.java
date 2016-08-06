@@ -13,18 +13,15 @@ import java.util.ArrayList;
 public class BluetoothManager{
 
     String Type=null;
-    Discovery d;
     BluetoothSocket SocketForClient;
     ServerSocket s;
     ClientSocket c;
     public static Object recieve_msg;
+    public static Object device_list;
     Boolean bn=true;
-    final long end = System.nanoTime() + 30 * 1000 * 1000 * 1000L;
-    int loop = 1;
     public BluetoothManager()
     {
         Log.e("pulkit", "in constructor");
-        d=new Discovery();
         s=new ServerSocket();
         c=new ClientSocket();
     }
@@ -32,37 +29,21 @@ public class BluetoothManager{
     {
        Type=t;
     }
+    public void setListObject(Object myObject)
+    {
+        device_list=myObject;
+    }
     public void scanClients()
     {
-        d.onBluetooth();
-        s.startConnection(d.bluetoothAdapter);
+        s.startConnection(Discovery.bluetoothAdapter);
     }
-    public void setObject(Object myObject)
+    public void setMessageObject(Object myObject)
     {
         recieve_msg=myObject;
     }
-    public ArrayList<String> scanServer()
-    {
-        d.onBluetooth();
-           while(bn)
-           {
-               if(d.discoverymode==true)
-               {
-                   bn=false;
-               }
-           }
-        do {
-            for (int i=0; i<loop; ++i) {
-
-            }
-            loop++;
-        } while (System.nanoTime() < end);
-          return d.list;
-    }
-
     public void connectTo(String s)
     {
-        c.startConnection(d.bluetoothAdapter, s);
+        c.startConnection(Discovery.bluetoothAdapter, s);
     }
 
     public void sendText(String s)
