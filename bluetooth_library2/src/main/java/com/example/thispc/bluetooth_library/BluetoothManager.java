@@ -2,22 +2,32 @@ package com.example.thispc.bluetooth_library;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by this pc on 02-08-2016.
  */
-public class BluetoothManager extends Activity{
+public class BluetoothManager{
 
     String Type=null;
-    Discovery d=new Discovery();
+    Discovery d;
     BluetoothSocket SocketForClient;
-    ServerSocket s=new ServerSocket();
-    ClientSocket c=new ClientSocket();
+    ServerSocket s;
+    ClientSocket c;
     public static Object recieve_msg;
     Boolean bn=true;
     final long end = System.nanoTime() + 30 * 1000 * 1000 * 1000L;
     int loop = 1;
+    public BluetoothManager()
+    {
+        Log.e("pulkit", "in constructor");
+        d=new Discovery();
+        s=new ServerSocket();
+        c=new ClientSocket();
+    }
     public void Type(String t)
     {
        Type=t;
@@ -31,7 +41,7 @@ public class BluetoothManager extends Activity{
     {
         recieve_msg=myObject;
     }
-    public ArrayAdapter<String> scanServer()
+    public ArrayList<String> scanServer()
     {
         d.onBluetooth();
            while(bn)
@@ -47,7 +57,7 @@ public class BluetoothManager extends Activity{
             }
             loop++;
         } while (System.nanoTime() < end);
-          return d.adapter;
+          return d.list;
     }
 
     public void connectTo(String s)

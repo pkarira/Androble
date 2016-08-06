@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.widget.ArrayAdapter;
 
+import java.util.ArrayList;
+import java.util.Observable;
+
 
 public class Discovery extends Activity {
     private static final int ENABLE_BT_REQUEST_CODE = 1;
@@ -21,9 +24,12 @@ public class Discovery extends Activity {
     private static final int DISCOVERABLE_DURATION = 300;
     public BluetoothAdapter bluetoothAdapter;
     Boolean discoverymode=false;
-    public ArrayAdapter adapter= new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+        public ArrayList<String> list;
+    public receiveadapter ra;
     public void onBluetooth()
     {
+        ra=new receiveadapter();
+       list= new ArrayList<String>();
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
@@ -46,7 +52,7 @@ public class Discovery extends Activity {
             }
         } else if (resultCode == Finished_Activity) {
             bluetoothAdapter.disable();
-            adapter.clear();
+            list.clear();
         }
     }
     public String discoverDevices() {
@@ -78,8 +84,17 @@ public class Discovery extends Activity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                adapter.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+                list.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+                ra.call(list);
             }
         }
     };
+}
+class receiveadapter extends Observable
+{
+    public void call(ArrayList<String> s)
+    {
+        setChanged();
+        notifyObservers(s);
+    }
 }
