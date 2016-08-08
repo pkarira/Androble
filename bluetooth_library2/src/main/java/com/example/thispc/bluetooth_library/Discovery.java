@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -36,25 +37,29 @@ abstract public class Discovery extends Activity {
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
     }
-    @Override
-    public void  onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ENABLE_BT_REQUEST_CODE) {
+            // Bluetooth successfully enabled!
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
 
-            if (resultCode == Activity.RESULT_OK)
-            {
                 makeDiscoverable();
                 discoverDevices();
 
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Bluetooth is not enabled.", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == DISCOVERABLE_BT_REQUEST_CODE) {
             if (resultCode == DISCOVERABLE_DURATION) {
-                   discoverymode=true;
+                discoverymode=true;
+                Toast.makeText(getApplicationContext(), "Your device is now discoverable for Server", Toast.LENGTH_SHORT).show();
             } else {
-               // return "Fail to enable discoverable mode.";
+                Toast.makeText(getApplicationContext(), "Fail to enable discoverable mode.", Toast.LENGTH_SHORT).show();
             }
         } else if (resultCode == Finished_Activity) {
             bluetoothAdapter.disable();
-            list.clear();
+
         }
     }
     public String discoverDevices() {
