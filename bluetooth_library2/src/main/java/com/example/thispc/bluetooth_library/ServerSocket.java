@@ -12,11 +12,11 @@ import java.util.UUID;
  */
 public class ServerSocket {
     public ArrayList<UUID> mUuids;
-    ListeningThread t;
+    ListeningThread listeningThread;
     boolean check;
     int b=0;
     int a1=0;
-    public static BluetoothSocket a[];
+    public static BluetoothSocket blueSocket_array[];
     public BluetoothAdapter bluetoothAdapter;
     SocketManager arraysm[];
     public void startConnection(BluetoothAdapter bluetoothAdapter1)
@@ -28,8 +28,8 @@ public class ServerSocket {
         mUuids.add(UUID.fromString("a81d6504-4536-49ee-a475-7d96d09439e4"));
         bluetoothAdapter=bluetoothAdapter1;
         arraysm=new SocketManager[4];
-        t = new ListeningThread();
-        t.start();
+        listeningThread = new ListeningThread();
+        listeningThread.start();
     }
     private class ListeningThread extends Thread {
         BluetoothServerSocket bluetoothServerSocket;
@@ -54,14 +54,14 @@ public class ServerSocket {
                         break;
                     }
                     for (i = 0; i < a1; i++) {
-                        if (bluetoothSocket.equals(a[i]))
+                        if (bluetoothSocket.equals(blueSocket_array[i]))
                             b++;
                     }
                     if (b == 0) {
-                        a[a1] = bluetoothSocket;
+                        blueSocket_array[a1] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
-                        SocketManager sm=new SocketManager(a[a1]);
+                        SocketManager sm=new SocketManager(blueSocket_array[a1]);
                         arraysm[a1]=sm;
                         sm.write(("?"+(a1+1)).getBytes());
                         a1++;

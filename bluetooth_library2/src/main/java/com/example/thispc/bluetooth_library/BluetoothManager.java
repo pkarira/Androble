@@ -14,16 +14,16 @@ public class BluetoothManager{
 
     String Type=null;
     BluetoothSocket SocketForClient;
-    ServerSocket s;
-    ClientSocket c;
+    ServerSocket serverSocket;
+    ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
     Boolean bn=true;
     public BluetoothManager()
     {
         Log.e("pulkit", "in constructor");
-        s=new ServerSocket();
-        c=new ClientSocket();
+        serverSocket=new ServerSocket();
+        clientSocket=new ClientSocket();
     }
     public void Type(String t)
     {
@@ -35,7 +35,7 @@ public class BluetoothManager{
     }
     public void scanClients()
     {
-        s.startConnection(Discovery.bluetoothAdapter);
+        serverSocket.startConnection(Discovery.bluetoothAdapter);
     }
     public void setMessageObject(Object myObject)
     {
@@ -43,14 +43,14 @@ public class BluetoothManager{
     }
     public void connectTo(String s)
     {
-        c.startConnection(Discovery.bluetoothAdapter, s);
+        clientSocket.startConnection(Discovery.bluetoothAdapter, s);
     }
 
     public void sendText(String s)
     {
-        if(c.check.equals(("connected"))&&Type.equalsIgnoreCase("client"))
+        if(clientSocket.check.equals(("connected"))&&Type.equalsIgnoreCase("client"))
         {
-             c.write(s);
+             clientSocket.write(s);
         }
     }
     public StringBuilder deviceList()
@@ -59,9 +59,9 @@ public class BluetoothManager{
     }
     public void sendText(String s1,int id)
     {
-       if(id<=(s.a1+1))
+       if(id<=(serverSocket.a1+1))
        {
-           s.write(s1,id);
+           serverSocket.write(s1,id);
        }
     }
 }

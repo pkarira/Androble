@@ -26,12 +26,12 @@ abstract public class Discovery extends Activity {
     public static BluetoothAdapter bluetoothAdapter;
     Boolean discoverymode=false;
     public ArrayList<String> list;
-    public deviceList dl;
+    public deviceList deice_list;
     public void enableBluetooth()
     {
-        dl=new deviceList();
+        deice_list=new deviceList();
         list= new ArrayList<String>();
-        dl.addObserver((Observer)BluetoothManager.device_list);
+        deice_list.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
@@ -87,16 +87,21 @@ abstract public class Discovery extends Activity {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 list.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
-                dl.call(list);
+                deice_list.call(list);
             }
         }
     };
 }
 class deviceList extends Observable
 {
+    ArrayList<String> s1;
     public void call(ArrayList<String> s)
     {
+        this.s1=s;
         setChanged();
         notifyObservers(s);
+    }
+    public synchronized ArrayList<String> getList() {
+        return s1;
     }
 }

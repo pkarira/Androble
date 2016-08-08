@@ -21,7 +21,7 @@ public class SocketManager extends Thread {
         BluetoothSocket mbluetoothSocket=null;
         public static StringBuilder sb=new StringBuilder();
         int playerid=0;
-        receivemsg rm;
+        receivemsg recMsg;
         public SocketManager(BluetoothSocket socket) {
             mmSocket = socket;
             mBluetoothSocket=socket;
@@ -37,8 +37,8 @@ public class SocketManager extends Thread {
             mmOutStream = tmpOut;
         }
          public void run() {
-             rm=new receivemsg();
-             rm.addObserver((Observer)BluetoothManager.recieve_msg);
+             recMsg=new receivemsg();
+             recMsg.addObserver((Observer) BluetoothManager.recieve_msg);
             byte[] buffer = new byte[1024];
             int bytes1=0;
              int bytes2=0;
@@ -54,7 +54,7 @@ public class SocketManager extends Thread {
                             sb.append(readMessage.substring(1)+" "+(playerid+1));
                             playerid++;
                         bytes2=bytes1;
-                        rm.call(readMessage);
+                        recMsg.call(readMessage);
                     }
                 } catch (Exception e) {
                 }

@@ -15,9 +15,9 @@ import java.util.UUID;
 public class ClientSocket {
     public ArrayList<UUID> mUuids;
     public BluetoothAdapter bluetoothAdapter;
-    ConnectingThread ct;
+    ConnectingThread connectingThread;
     String check=null;
-    SocketManager sm;
+    SocketManager socketManager;
     BluetoothSocket finalBluetoothSocket=null;
     public void startConnection(BluetoothAdapter a,String s)
     {
@@ -31,8 +31,8 @@ public class ClientSocket {
         BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(MAC);
         for (int i = 0; i < 4; i++) {
             try {
-                ct = new ConnectingThread(bluetoothDevice, mUuids.get(i));
-                ct.start();
+                connectingThread = new ConnectingThread(bluetoothDevice, mUuids.get(i));
+                connectingThread.start();
             } catch (Exception e) {
             }
         }
@@ -80,15 +80,15 @@ public class ClientSocket {
     }
     public void connected(BluetoothSocket bluetoothSocket)
     {
-        sm=new SocketManager(bluetoothSocket);
-        sm.write((bluetoothAdapter.getName()).getBytes());
+        socketManager=new SocketManager(bluetoothSocket);
+        socketManager.write((bluetoothAdapter.getName()).getBytes());
         finalBluetoothSocket=bluetoothSocket;
     }
     public void write(String s)
     {
         if(finalBluetoothSocket!= null)
         {
-            sm.write(s.getBytes());
+            socketManager.write(s.getBytes());
         }
     }
 }
