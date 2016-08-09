@@ -19,6 +19,7 @@ public class SocketManager extends Thread {
         private final OutputStream mmOutStream;
         private final BluetoothSocket mBluetoothSocket;
         BluetoothSocket mbluetoothSocket=null;
+        public static String my_id=null;
         public static StringBuilder sb=new StringBuilder();
         int playerid=0;
         receivemsg recMsg;
@@ -50,9 +51,13 @@ public class SocketManager extends Thread {
                     if(bytes1!=bytes2)
                     {
                     readMessage = new String(buffer, 0, bytes1);
+                        if(readMessage.contains("/"))
+                        { sb.append(readMessage.substring(1)+" "+(playerid+1));
+                            playerid++;}
                         if(readMessage.contains("?"))
-                            sb.append(readMessage.substring(1)+" "+(playerid+1));
-                            playerid++;
+                        {
+                            my_id=readMessage.substring(1);
+                        }
                         bytes2=bytes1;
                         recMsg.call(readMessage);
                     }
@@ -74,17 +79,16 @@ public class SocketManager extends Thread {
 
             }
         }
-    public int id()
-    {
-        return playerid ;
     }
-    }
-class receivemsg extends Observable
-{
-    public void call(String s)
-    {
+class receivemsg extends Observable {
+    String message="";
+    public void call(String s) {
+        this.message=s;
         setChanged();
         notifyObservers(s);
+    }
+    public synchronized String getMessage() {
+        return this.message;
     }
 }
 

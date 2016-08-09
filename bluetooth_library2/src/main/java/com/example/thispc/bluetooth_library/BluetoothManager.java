@@ -50,12 +50,16 @@ public class BluetoothManager{
     {
         if(clientSocket.check.equals(("connected"))&&Type.equalsIgnoreCase("client"))
         {
-             clientSocket.write(s);
+            clientSocket.write(SocketManager.my_id+":"+s);
         }
     }
     public StringBuilder deviceList()
     {
          return SocketManager.sb;
+    }
+    public String id()
+    {
+        return SocketManager.my_id ;
     }
     public void sendText(String s1,int id)
     {
