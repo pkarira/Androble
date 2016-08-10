@@ -12,7 +12,10 @@ import java.util.ArrayList;
  */
 public class BluetoothManager{
 
-    String Type=null;
+    enum connectionType{
+        client,server
+    }
+    connectionType Type;
     BluetoothSocket SocketForClient;
     ServerSocket serverSocket;
     ClientSocket clientSocket;
@@ -25,19 +28,22 @@ public class BluetoothManager{
         serverSocket=new ServerSocket();
         clientSocket=new ClientSocket();
     }
-    public void Type(String t)
+    public void Type(connectionType t)
     {
        Type=t;
     }
     public void setListObject(Object myObject)
+
     {
         device_list=myObject;
     }
     public void scanClients()
+
     {
         serverSocket.startConnection(Discovery.bluetoothAdapter);
     }
     public void setMessageObject(Object myObject)
+
     {
         recieve_msg=myObject;
     }
@@ -48,7 +54,7 @@ public class BluetoothManager{
 
     public void sendText(String s)
     {
-        if(clientSocket.check.equals(("connected"))&&Type.equalsIgnoreCase("client"))
+        if(clientSocket.check.equals(("connected"))&&Type.equals(connectionType.client))
         {
             clientSocket.write(SocketManager.my_id+":"+s);
         }
