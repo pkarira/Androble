@@ -12,25 +12,34 @@ import java.util.ArrayList;
  */
 public class BluetoothManager{
 
-    enum connectionType{
+    enum ConnectionType{
         client,server
     }
-    connectionType Type;
+    ConnectionType Type;
     BluetoothSocket SocketForClient;
     ServerSocket serverSocket;
     ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
-    Boolean bn=true;
-    public BluetoothManager()
+    boolean bn=true;
+    private static BluetoothManager bm=null;
+
+    private BluetoothManager()
     {
         Log.e("pulkit", "in constructor");
         serverSocket=new ServerSocket();
         clientSocket=new ClientSocket();
     }
+    public static BluetoothManager getInstance()
+    {
+        if(bm== null) {
+            bm = new BluetoothManager();
+        }
+        return bm;
+    }
     public void Type(String t)
     {
-       Type=connectionType.valueOf(t);
+       Type=ConnectionType.valueOf(t);
     }
     public void setListObject(Object myObject)
 
@@ -54,7 +63,7 @@ public class BluetoothManager{
 
     public void sendText(String s)
     {
-        if(clientSocket.check.equals(("connected"))&&Type.equals(connectionType.client))
+        if(clientSocket.check.equals(("connected"))&&Type.equals(ConnectionType.client))
         {
             clientSocket.write(SocketManager.my_id+":"+s);
         }

@@ -25,7 +25,7 @@ abstract public class Discovery extends Activity {
     private static final int Finished_Activity = 3;
     private static final int DISCOVERABLE_DURATION = 300;
     public static BluetoothAdapter bluetoothAdapter;
-    Boolean discoverymode=false;
+    boolean discoverymode=false;
     public ArrayList<String> list;
     public deviceList deice_list;
     public void enableBluetooth()
