@@ -28,9 +28,9 @@ public class BluetoothManager{
         serverSocket=new ServerSocket();
         clientSocket=new ClientSocket();
     }
-    public void Type(connectionType t)
+    public void Type(String t)
     {
-       Type=t;
+       Type=connectionType.valueOf(t);
     }
     public void setListObject(Object myObject)
 
