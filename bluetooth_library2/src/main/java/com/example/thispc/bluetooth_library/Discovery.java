@@ -27,12 +27,12 @@ abstract public class Discovery extends Activity {
     public static BluetoothAdapter bluetoothAdapter;
     boolean discoverymode=false;
     public ArrayList<String> list;
-    public deviceList deice_list;
+    public deviceList device_list;
     public void enableBluetooth()
     {
-        deice_list=new deviceList();
+        device_list=new deviceList();
         list= new ArrayList<String>();
-        deice_list.addObserver((Observer)BluetoothManager.device_list);
+        device_list.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
@@ -42,6 +42,7 @@ abstract public class Discovery extends Activity {
         if (requestCode == ENABLE_BT_REQUEST_CODE) {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
+                device_list.call("bluetooth enabled");
                 Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
 
                 makeDiscoverable();
@@ -54,7 +55,7 @@ abstract public class Discovery extends Activity {
         } else if (requestCode == DISCOVERABLE_BT_REQUEST_CODE) {
             if (resultCode == DISCOVERABLE_DURATION) {
                 discoverymode=true;
-                Toast.makeText(getApplicationContext(), "Your device is now discoverable for Server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Your device is now discoverable", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Fail to enable discoverable mode.", Toast.LENGTH_SHORT).show();
             }
@@ -92,22 +93,21 @@ abstract public class Discovery extends Activity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                list.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
-                deice_list.call(list);
+                device_list.call(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
             }
         }
     };
 }
 class deviceList extends Observable
 {
-    ArrayList<String> s1;
-    public void call(ArrayList<String> s)
+    String s1;
+    public void call(String s)
     {
         this.s1=s;
         setChanged();
         notifyObservers(s);
     }
-    public synchronized ArrayList<String> getList() {
+    public synchronized String getContent() {
         return s1;
     }
 }

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observer;
 import java.util.UUID;
 
 /**
@@ -18,9 +19,13 @@ public class ServerSocket {
     int a1=0;
     public static BluetoothSocket blueSocket_array[];
     public BluetoothAdapter bluetoothAdapter;
+    receivemsg recMsg1;
     SocketManager arraysm[];
     public void startConnection(BluetoothAdapter bluetoothAdapter1)
     {
+        recMsg1=new receivemsg();
+        recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
+        blueSocket_array=new BluetoothSocket[4];
         mUuids= new ArrayList<UUID>();
         mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
         mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
@@ -58,10 +63,12 @@ public class ServerSocket {
                             b++;
                     }
                     if (b == 0) {
+                        recMsg1.call("Connected to"+" "+(a1+1));
                         blueSocket_array[a1] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
                         SocketManager sm=new SocketManager(blueSocket_array[a1]);
+                        sm.start();
                         arraysm[a1]=sm;
                         sm.write(("?"+(a1+1)).getBytes());
                         a1++;

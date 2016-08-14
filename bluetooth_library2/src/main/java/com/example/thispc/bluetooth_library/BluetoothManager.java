@@ -69,6 +69,7 @@ public class BluetoothManager{
         }
     }
     public StringBuilder deviceList()
+
     {
          return SocketManager.sb;
     }

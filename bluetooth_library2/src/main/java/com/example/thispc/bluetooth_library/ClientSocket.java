@@ -19,8 +19,11 @@ public class ClientSocket {
     String check=null;
     SocketManager socketManager;
     BluetoothSocket finalBluetoothSocket=null;
+    receivemsg recMsg1;
     public void startConnection(BluetoothAdapter a,String s)
     {
+        recMsg1=new receivemsg();
+        recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
         bluetoothAdapter=a;
         mUuids= new ArrayList<UUID>();
         mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
@@ -80,7 +83,9 @@ public class ClientSocket {
     }
     public void connected(BluetoothSocket bluetoothSocket)
     {
+        recMsg1.call("connected");
         socketManager=new SocketManager(bluetoothSocket);
+        socketManager.start();
         socketManager.write(("/"+bluetoothAdapter.getName()).getBytes());
         finalBluetoothSocket=bluetoothSocket;
     }
