@@ -44,26 +44,29 @@ public class SocketManager extends Thread {
             int bytes1=0;
              int bytes2=0;
             // Keep listening to the InputStream while connected
-            while (true) {
-                try {
-                    String readMessage ="";
-                    bytes1 = mmInStream.read(buffer);
-                    if(bytes1!=bytes2)
-                    {
-                    readMessage = new String(buffer, 0, bytes1);
-                        if(readMessage.contains("/"))
-                        { sb.append(readMessage.substring(1)+" "+(playerid+1));
-                            playerid++;}
-                        if(readMessage.contains("?"))
-                        {
-                            my_id=readMessage.substring(1);
-                        }
-                        bytes2=bytes1;
-                        recMsg.call(readMessage);
-                    }
-                } catch (Exception e) {
-                }
-            }
+             while (true) {
+                 try {
+                     String readMessage ="";
+                     bytes1 = mmInStream.read(buffer);
+                     if(bytes1!=bytes2)
+                     {
+                         readMessage = new String(buffer, 0, bytes1);
+                         if(readMessage.contains("/"))
+                         {sb.append(readMessage.substring(1)+" "+(playerid+1));
+                             playerid++;
+                             recMsg.call(readMessage.substring(1));}
+                         else
+                         if(readMessage.contains("?"))
+                         {
+                             my_id=readMessage.substring(1);
+                             recMsg.call(readMessage.substring(1));
+                         }else
+                             recMsg.call(readMessage.substring(0));
+                         bytes2=bytes1;
+                     }
+                 } catch (Exception e) {
+                 }
+             }
         }
     public void write(byte[] buffer) {
         try {
