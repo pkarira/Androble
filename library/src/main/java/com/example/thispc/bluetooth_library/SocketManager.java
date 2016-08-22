@@ -59,7 +59,7 @@ public class SocketManager extends Thread {
                          if(readMessage.contains("?"))
                          {
                              my_id=readMessage.substring(1);
-                             recMsg.call(readMessage.substring(1));
+                             recMsg.call("Your ID is "+readMessage.substring(1));
                          }else
                              recMsg.call(readMessage.substring(0));
                          bytes2=bytes1;
