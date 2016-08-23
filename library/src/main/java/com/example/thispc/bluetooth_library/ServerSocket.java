@@ -15,8 +15,8 @@ public class ServerSocket {
     public ArrayList<UUID> mUuids;
     ListeningThread listeningThread;
     boolean check;
-    int b=0;
-    int a1=0;
+    int recheckSocket=0;
+    int socketCounter=0;
     public static BluetoothSocket blueSocket_array[];
     public BluetoothAdapter bluetoothAdapter;
     receivemsg recMsg1;
@@ -51,27 +51,27 @@ public class ServerSocket {
                 }
                 check = true;
                 bluetoothServerSocket = temp;
-                b = 0;
+                recheckSocket = 0;
                 while (check) {
                     try {
                         bluetoothSocket = bluetoothServerSocket.accept();
                     } catch (IOException e) {
                         break;
                     }
-                    for (i = 0; i < a1; i++) {
+                    for (i = 0; i < socketCounter; i++) {
                         if (bluetoothSocket.equals(blueSocket_array[i]))
-                            b++;
+                            recheckSocket++;
                     }
-                    if (b == 0) {
-                        recMsg1.call("Connected to"+" "+(a1+1));
-                        blueSocket_array[a1] = bluetoothSocket;
+                    if (recheckSocket == 0) {
+                        recMsg1.call("Connected to"+" "+(socketCounter+1));
+                        blueSocket_array[socketCounter] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
-                        SocketManager sm=new SocketManager(blueSocket_array[a1]);
+                        SocketManager sm=new SocketManager(blueSocket_array[socketCounter]);
                         sm.start();
-                        arraysm[a1]=sm;
-                        sm.write(("?"+(a1+1)).getBytes());
-                        a1++;
+                        arraysm[socketCounter]=sm;
+                        sm.write(("?"+(socketCounter+1)).getBytes());
+                        socketCounter++;
                     }
                 }
                 try {
