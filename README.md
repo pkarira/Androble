@@ -1,52 +1,93 @@
 # Androble
-<h2>INTRODUCTION</h2>
 
- The library is capable of connecting around 4 devices to the main server device.
+> Connect nearby devices to your server !
 
-<h2>ABOUT LIBRARY</h2>
+Androble uses Android's Bluetooth API and establishes RFCOMM channels. The server listens for various clients using a unique UUID and the client having the same UUID is connected to the server. In multiple devices, server creates 4 RFCOMM channels with 4 different UUIDs and then each connection is maintained on a different thread by the server so that if anyhow connection with a particular client fails then the connection with other clients is uninterrupted.
 
-The Library uses Android's Bluetooth API and establishes RFCOMM channels. The server listens for various clients using a unique UUID and the client having the same UUID is connected to the server. In Multiple Devices server creates 4 RFCOMM channels with 4 different UUIDs and then each connection is maintained on a different thread by the server so that if anyhow connection with a particular client fails then the connection with other clients is uninterrupted.
 
-BluetoothManager class is the master class of this library and contains the followind functions:
-<ul style="list-style-type:disc">
+## Reference
 
-  <li>public void Type(String t) &nbsp&nbsp&nbsp//it sets either you want to connect as server or client</li>
-  <li>public void scanClients()  &nbsp&nbsp&nbsp  //it starts scanning clients on server side</li>
-  <li>public void connectTo(String s) &nbsp&nbsp&nbsp  //it lets cleint to connect to the desired server from list</li>
-  <li>public void sendText(String s)  &nbsp&nbsp&nbsp  //it allows to send msg from client to connected server</li>
-  <li>public void sendText(String s,int id)  &nbsp&nbsp&nbsp  //it allows to send msg from server to client specifying the id of client</li>
-  <li> public StringBuilder deviceList() &nbsp&nbsp&nbsp     // server can fetch list of all connected clients with respective ids</li>
-   <li>public void setMessageObject(Object myObject)&nbsp&nbsp&nbsp     //it sets the observer object that fetches received messages</li>
-  <li>public void setListObject(Object myObject) &nbsp&nbsp&nbsp       //it sets the observer object that fetches list of detected devices for client side</li>
-  </ul>
-  <h2>HOW TO USE</h2>
-  
-Firstly, the activity in which you want to scan for devices,extend it by Discovery instead of Activity/AppCompatActivity like:<br>
-```sh 
+BluetoothManager class is the master class of this library and contains the following functions:
+
+```java
+public void Type(String t)
+```
+Sets either you want to connect as server or client.
+
+```java
+public void scanClients()
+```
+Starts scanning clients on server side.
+
+```java
+public void connectTo(String s)
+```
+Lets client to connect to the desired server from list.
+
+```java
+public void sendText(String s)
+```
+Allows to send message from client to connected server.
+
+```java
+public void sendText(String s,int id)
+```
+Allows to send message from server to client specifying the id of client.
+
+```java
+public StringBuilder deviceList()
+```
+Server can fetch list of all connected clients with respective ids.
+
+```java
+public void setMessageObject(Object myObject)
+```
+Sets the observer object that fetches received messages.
+
+```java
+public void setListObject(Object myObject)
+```
+Sets the observer object that fetches list of detected devices for client side.
+
+
+## Usage
+
+Extend the activity in which you want to scan for devices by Discovery instead of Activity / AppCompatActivity like:
+
+```java
 public class MainActivity extends Discovery{}
 ```
-then create an observer class for receiving the list of devices scanned by bluetooth like:<br><br>
-class DeviceList implements Observer {<br>
-        @Override<br>
-        public void update(Observable observable, Object data) {<br>
-            adapter.add(((deviceList)observable).getNewDevice());<br>
-        }<br>
-    }<br><br>
-    then create another oberver class for receiving text messages like :<br><br>
-    class receiceMessage implements Observer {<br>
-        @Override<br>
-        public void update(Observable observable, Object data) {<br>
-           String msg = ((receivemsg)observable).getMessage();<br>
-           Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();<br>
-           //do whatever you want to do with received message<br>
-        }<br>
-    }<br><br>
-    Now get instance of Bluetooth manager class like :<br>
-    BluetoothManager bluetoothManager= BluetoothManager.getInstance();<br><br>
-    now create objects of DeviceList and receiceMessage class<br>
-    receiceMessage  rm = new receiceMessage();<br><br>
-    DeviceList dl=new DeviceList();<br><br>
-    <ul style="list-style-type:disc">
+
+then create a class which implements Observer interface. This facilitates receiving of the list of devices scanned by Bluetooth.
+
+```java
+class DeviceList implements Observer {
+    @Override
+    public void update(Observable observable, Object data) {
+        adapter.add(((deviceList)observable).getNewDevice());
+    }
+}
+```
+
+then create another class, again implementing the Observer interface, for receiving text messages.
+
+```java
+class ReceiveMessage implements Observer {
+    @Override
+    public void update(Observable observable, Object data) {
+       String msg = ((receivemsg)observable).getMessage();
+       Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();
+       //do whatever you want to do with received message
+    }
+}
+```
+
+Now get instance of Bluetooth manager classike :<br>
+BluetoothManager bluetoothManager= BluetoothManager.getInstance();<br><br>
+now create objects of DeviceList and receiceMessage class<br>
+receiceMessage  rm = new receiceMessage();<br><br>
+DeviceList dl=new DeviceList();<br><br>
+<ul style="list-style-type:disc">
    <li>CONNECTING AS SERVER:-<br><br>
     Call Type funtion of BluetoothManager class and pass "server" as parameter:
     bluetoothManager.Type("server");<br>//now you will be able to connect upto 4 devices<br><br>
