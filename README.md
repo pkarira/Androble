@@ -90,7 +90,7 @@ DeviceList dl=new DeviceList();<br><br>
 <ul style="list-style-type:disc">
    <li>CONNECTING AS SERVER:-<br><br>
     Call Type funtion of BluetoothManager class and pass "server" as parameter:
-    bluetoothManager.Type("server");<br>//now you will be able to connect upto 4 devices<br><br>
+    bluetoothManager.Type("SERVER");<br>//now you will be able to connect upto 4 devices<br><br>
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
     bluetoothManager.setMessageObject(rm);<br><br>
     For sending Message to any connected client use:<br>
@@ -98,7 +98,7 @@ DeviceList dl=new DeviceList();<br><br>
     To get the ID's of all connected client call deviceList() described above.<br><br>
     </li>
     <li>CONNECTING AS CLIENT:-<br><br>
-    bluetoothManager.Type("client");//now you will be able to a single server device
+    bluetoothManager.Type(" CLIENT");//now you will be able to a single server device
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
     bluetoothManager.setMessageObject(rm);<br><br>
     pass DeviceList Object to setListObject(DeviceList dl) like:<br>
