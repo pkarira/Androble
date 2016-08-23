@@ -13,15 +13,14 @@ import java.util.ArrayList;
 public class BluetoothManager{
 
     enum ConnectionType{
-        client,server
+        CLIENT,SERVER
     }
     ConnectionType Type;
     BluetoothSocket SocketForClient;
-    ServerSocket serverSocket;
+    public static ServerSocket serverSocket;
     ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
-    boolean bn=true;
     private static BluetoothManager bm=null;
 
     private BluetoothManager()
@@ -63,7 +62,7 @@ public class BluetoothManager{
 
     public void sendText(String s)
     {
-        if(clientSocket.check.equals(("connected"))&&Type.equals(ConnectionType.client))
+        if(clientSocket.check.equals(("connected"))&&Type.equals(ConnectionType.CLIENT))
         {
             clientSocket.write(SocketManager.my_id+":"+s);
         }
@@ -79,9 +78,16 @@ public class BluetoothManager{
     }
     public void sendText(String s1,int id)
     {
-       if(id<=(serverSocket.a1+1))
+       if(id<=(serverSocket.socketCounter+1))
        {
            serverSocket.write(s1,id);
        }
+    }
+    public void clientToClient(String s1,int id)
+    {
+        if(id<=(serverSocket.socketCounter+1))
+        {
+            clientSocket.write("<"+id+">"+s1);
+        }
     }
 }
