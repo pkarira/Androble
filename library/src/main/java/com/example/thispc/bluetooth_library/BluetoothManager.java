@@ -1,11 +1,7 @@
 package com.example.thispc.bluetooth_library;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import java.util.ArrayList;
 
 /**
  * Created by this pc on 02-08-2016.
@@ -48,7 +44,7 @@ public class BluetoothManager{
     public void scanClients()
 
     {
-        serverSocket.startConnection(Discovery.bluetoothAdapter);
+        serverSocket.startConnection(BluetoothActivity.bluetoothAdapter);
     }
     public void setMessageObject(Object myObject)
 
@@ -57,7 +53,7 @@ public class BluetoothManager{
     }
     public void connectTo(String s)
     {
-        clientSocket.startConnection(Discovery.bluetoothAdapter, s);
+        clientSocket.startConnection(BluetoothActivity.bluetoothAdapter, s);
     }
 
     public void sendText(String s)

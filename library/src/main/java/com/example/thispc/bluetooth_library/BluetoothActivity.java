@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -19,7 +20,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-abstract public class Discovery extends Activity {
+abstract public class BluetoothActivity extends AppCompatActivity {
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
     private static final int Finished_Activity = 3;
@@ -68,7 +69,7 @@ abstract public class Discovery extends Activity {
         if (bluetoothAdapter.startDiscovery()) {
             return "Discovering peers";
         } else {
-            return "Discovery failed to start.";
+            return "BluetoothActivity failed to start.";
         }
     }
     protected void makeDiscoverable() {

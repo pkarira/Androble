@@ -56,7 +56,7 @@ public class SocketManager extends Thread {
                          {
                              sb.append(readMessage.substring(1)+" "+(playerid+1)+"\n");
                              playerid++;
-                             recMsg.call(readMessage.substring(1));}
+                             recMsg.call("Connected to "+readMessage.substring(1));}
                          else
                          if(readMessage.contains("?"))
                          {
