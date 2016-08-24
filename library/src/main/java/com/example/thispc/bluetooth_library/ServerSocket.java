@@ -18,7 +18,7 @@ public class ServerSocket {
     int recheckSocket=0;
     int socketCounter=0;
     public static BluetoothSocket blueSocket_array[];
-    public BluetoothAdapter bluetoothAdapter;
+    public static BluetoothAdapter bluetoothAdapter;
     receivemsg recMsg1;
     SocketManager arraysm[];
     public void startConnection(BluetoothAdapter bluetoothAdapter1)

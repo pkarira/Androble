@@ -43,6 +43,7 @@ public class SocketManager extends Thread {
             byte[] buffer = new byte[1024];
             int bytes1=0;
              int bytes2=0;
+             sb.append(ServerSocket.bluetoothAdapter.getName()+" "+"SERVER"+"\n");
             // Keep listening to the InputStream while connected
              while (true) {
                  try {

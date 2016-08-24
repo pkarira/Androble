@@ -67,9 +67,9 @@ public class BluetoothManager{
             clientSocket.write(SocketManager.my_id+":"+s);
         }
     }
-    public StringBuilder deviceList()
+    public String deviceList()
     {
-         return SocketManager.sb;
+         return SocketManager.sb.substring(0);
     }
     public String id()
     {
