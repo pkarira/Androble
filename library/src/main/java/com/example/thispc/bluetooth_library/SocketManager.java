@@ -53,7 +53,7 @@ public class SocketManager extends Thread {
                          readMessage = new String(buffer, 0, bytes1);
                          if(readMessage.contains("/"))
                          {
-                             sb.append(readMessage.substring(1)+" "+(playerid+1));
+                             sb.append(readMessage.substring(1)+" "+(playerid+1)+"\n");
                              playerid++;
                              recMsg.call(readMessage.substring(1));}
                          else
@@ -62,9 +62,14 @@ public class SocketManager extends Thread {
                              my_id=readMessage.substring(1);
                              recMsg.call("Your ID is "+readMessage.substring(1));
                          }else
-                         if(readMessage.contains("<"))
+                         if(readMessage.contains("<")&&readMessage.contains(">"))
                          {
                              BluetoothManager.serverSocket.write(readMessage.substring(3),Integer.parseInt(String.valueOf(readMessage.charAt(1))));
+                         }
+                         else
+                         if(readMessage.contains("(")&&readMessage.contains(")"))
+                         {
+                             BluetoothManager.serverSocket.write(sb.substring(0),Integer.parseInt(String.valueOf(readMessage.charAt(1))));
                          }
                          else
                              recMsg.call(readMessage.substring(0));
