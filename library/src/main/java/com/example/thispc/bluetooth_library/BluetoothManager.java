@@ -92,14 +92,17 @@ public class BluetoothManager{
         {
             return SocketManager.sb.substring(0);}
     }
-    public void disconnect() throws IOException {
+    public String disconnect() throws IOException {
         if (Type.equals(ConnectionType.CLIENT))
         {
             clientSocket.disconnectClient();
+            return "DISCONNECTED";
         }else
         if (Type.equals(ConnectionType.SERVER))
         {
             serverSocket.disconnectServer();
+            return "DISCONNECTED";
         }
+        return null;
     }
 }
