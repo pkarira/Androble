@@ -96,4 +96,7 @@ public class ClientSocket {
             socketManager.write(s.getBytes());
         }
     }
+    public  void disconnectClient() throws IOException {
+        socketManager.disconnect2();
+    }
 }

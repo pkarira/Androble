@@ -94,6 +94,11 @@ public class SocketManager extends Thread {
 
             }
         }
+public void disconnect2() throws IOException {
+    if(mmInStream!=null&&mmOutStream!=null)
+    {mmInStream.close();
+    mmOutStream.close();}
+}
     }
 class receivemsg extends Observable {
     String message="";

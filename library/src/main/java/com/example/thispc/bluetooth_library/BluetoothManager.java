@@ -3,6 +3,8 @@ package com.example.thispc.bluetooth_library;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import java.io.IOException;
+
 /**
  * Created by this pc on 02-08-2016.
  */
@@ -17,20 +19,19 @@ public class BluetoothManager{
     ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
-    private static BluetoothManager bm=null;
+    private static BluetoothManager bManager=null;
 
     private BluetoothManager()
     {
-        Log.e("pulkit", "in constructor");
         serverSocket=new ServerSocket();
         clientSocket=new ClientSocket();
     }
     public static BluetoothManager getInstance()
     {
-        if(bm== null) {
-            bm = new BluetoothManager();
+        if(bManager== null) {
+            bManager= new BluetoothManager();
         }
-        return bm;
+        return bManager;
     }
     public void Type(String t)
     {
@@ -63,7 +64,7 @@ public class BluetoothManager{
             clientSocket.write(SocketManager.my_id+":"+s);
         }
     }
-    public String id()
+    public String getId()
     {
         return SocketManager.my_id ;
     }
@@ -90,5 +91,15 @@ public class BluetoothManager{
         else
         {
             return SocketManager.sb.substring(0);}
+    }
+    public void disconnect() throws IOException {
+        if (Type.equals(ConnectionType.CLIENT))
+        {
+            clientSocket.disconnectClient();
+        }else
+        if (Type.equals(ConnectionType.SERVER))
+        {
+            serverSocket.disconnectServer();
+        }
     }
 }
