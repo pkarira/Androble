@@ -97,6 +97,7 @@ public class ClientSocket {
         }
     }
     public  void disconnectClient() throws IOException {
+        if(socketManager!=null)
         socketManager.disconnect2();
     }
 }

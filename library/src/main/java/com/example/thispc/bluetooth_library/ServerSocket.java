@@ -89,7 +89,7 @@ public class ServerSocket {
     public synchronized BluetoothSocket connected(BluetoothSocket socket) {
         return socket;
     }
-    public  void disconnectServer() throws IOException {
+    public  void disconnectServer() {
         for(int i=0;i<arraysm.length;i++)
         arraysm[i].disconnect2();
     }

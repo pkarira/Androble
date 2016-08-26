@@ -94,10 +94,16 @@ public class SocketManager extends Thread {
 
             }
         }
-public void disconnect2() throws IOException {
+public void disconnect2()  {
     if(mmInStream!=null&&mmOutStream!=null)
-    {mmInStream.close();
-    mmOutStream.close();}
+    {
+        try {
+            mmInStream.close();
+            mmOutStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        }
 }
     }
 class receivemsg extends Observable {
