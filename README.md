@@ -154,7 +154,10 @@ For sending Message to any onter client use:<br>
 bluetoothManager.clientToClient("your message",id)
  ```
 where id is the id of connected devices<br>
-To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.
+To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
+## Sample code for MainActivity [Wiki](https://github.com/pkarira/Androble/wiki)
+
+
 </li>
     <h2>App Using This Library</h2>
     <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-24.png" width="300">
