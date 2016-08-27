@@ -90,7 +90,8 @@ public class ServerSocket {
         return socket;
     }
     public  void disconnectServer() {
-        for(int i=0;i<arraysm.length;i++)
-        arraysm[i].disconnect2();
+        for(int i=0;i<socketCounter;i++) {
+            arraysm[i].disconnect2();
+        }
     }
 }

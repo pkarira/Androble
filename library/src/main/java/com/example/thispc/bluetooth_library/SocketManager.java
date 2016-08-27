@@ -43,7 +43,7 @@ public class SocketManager extends Thread {
             byte[] buffer = new byte[1024];
             int bytes1=0;
              int bytes2=0;
-             sb.append(ServerSocket.bluetoothAdapter.getName()+" "+"SERVER"+"\n");
+             sb.append(ServerSocket.bluetoothAdapter.getName()+" "+"is"+" "+"SERVER"+"\n");
             // Keep listening to the InputStream while connected
              while (true) {
                  try {
@@ -54,7 +54,7 @@ public class SocketManager extends Thread {
                          readMessage = new String(buffer, 0, bytes1);
                          if(readMessage.contains("/"))
                          {
-                             sb.append(readMessage.substring(1)+" "+(playerid+1)+"\n");
+                             sb.append(readMessage.substring(1)+" "+"is"+" "+(playerid+1)+"\n");
                              playerid++;
                              recMsg.call("Connected to "+readMessage.substring(1));}
                          else
