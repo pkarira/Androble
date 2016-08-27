@@ -121,7 +121,7 @@ DeviceList dl=new DeviceList();
     </li>
     <li>CONNECTING AS CLIENT:-<br><br>
     ```
-    bluetoothManager.Type(" CLIENT");
+    bluetoothManager.Type("CLIENT");
     ```//now you will be able to a single server device
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
     ```
@@ -144,12 +144,13 @@ DeviceList dl=new DeviceList();
   ```
   
     For sending Message to any connected server use:
-```java
+    
+```
  bluetoothManager.sendText("your message")
 ```
 
 For sending Message to any onter client use:<br>
- ```java
+ ```
 bluetoothManager.clientToClient("your message",id)
  ```
 where id is the id of connected devices<br>
