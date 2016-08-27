@@ -92,40 +92,64 @@ class ReceiveMessage implements Observer {
 }
 ```
 
-Now get instance of Bluetooth manager classike :<br>
-BluetoothManager bluetoothManager= BluetoothManager.getInstance();<br><br>
-now create objects of DeviceList and receiceMessage class<br>
-receiceMessage  rm = new receiceMessage();<br><br>
-DeviceList dl=new DeviceList();<br><br>
+Now get instance of Bluetooth manager class like :<br>
+```java
+BluetoothManager bluetoothManager= BluetoothManager.getInstance();
+```
+now create objects of DeviceList and receiceMessage class like:<br>
+```java
+receiceMessage  rm = new receiceMessage();
+```
+```java
+DeviceList dl=new DeviceList();
+```
 <ul style="list-style-type:disc">
    <li>CONNECTING AS SERVER:-<br><br>
-    Call Type funtion of BluetoothManager class and pass "server" as parameter:
-    bluetoothManager.Type("SERVER");<br>//now you will be able to connect upto 4 devices<br><br>
+    Call Type funtion of BluetoothManager class and pass "SERVER" as parameter:
+    ```
+    bluetoothManager.Type("SERVER");
+    ```//now you will be able to connect upto 4 devices<br><br>
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
-    bluetoothManager.setMessageObject(rm);<br><br>
+    ```
+    bluetoothManager.setMessageObject(rm);
+    ```<br><br>
     For sending Message to any connected client use:<br>
-    bluetoothManager.sendText("your message",playerId)<br><br>
-    To get the ID's of all connected devices call getAllConnectedDevices() described above.<br><br>
+    ```
+    bluetoothManager.sendText("your message",playerId)
+    ```<br><br>
+    To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
     </li>
     <li>CONNECTING AS CLIENT:-<br><br>
-    bluetoothManager.Type(" CLIENT");//now you will be able to a single server device
+    ```
+    bluetoothManager.Type(" CLIENT");
+    ```//now you will be able to a single server device
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
-    bluetoothManager.setMessageObject(rm);<br><br>
+    ```
+    bluetoothManager.setMessageObject(rm);
+    ```<br><br>
     pass DeviceList Object to setListObject(DeviceList dl) like:<br>
-    bluetoothManager.setListObject(dl);<br><br>
+    ```
+    bluetoothManager.setListObject(dl);
+    ```<br><br>
     Now from the obtained list of available devices select server device you want to connect to and pass its complete string to connectTo(String s) function like:<br>
     let listView is your ListView Object , <br><br>
+    ```java
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {<br>
             @Override<br>
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {<br>
                 String itemValue = (String) listView.getItemAtPosition(position);<br>
                 bluetoothManager.connectTo(itemValue);<br><br>
     For sending Message to any connected server use:<br>
-bluetoothManager.sendText("your message")<br><br>
+    ```
+    ```
+bluetoothManager.sendText("your message")
+```<br><br>
 For sending Message to any onter client use:<br>
-bluetoothManager.clientToClient("your message",id)<br>
+```
+bluetoothManager.clientToClient("your message",id)
+```<br>
 where id is the id of connected devices<br>
-To get the ID's of all connected devices call getAllConnectedDevices() described above.<br><br>
+To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
 </li>
     <h2>App Using This Library</h2>
     <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-24.png" width="300">
