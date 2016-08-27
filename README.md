@@ -103,8 +103,10 @@ receiceMessage  rm = new receiceMessage();
 ```java
 DeviceList dl=new DeviceList();
 ```
-<ul style="list-style-type:disc">
-   <li>CONNECTING AS SERVER:-<br><br>
+
+ ## CONNECTING AS SERVER:-
+  
+  
     Call Type funtion of BluetoothManager class and pass "SERVER" as parameter:
     ```
     bluetoothManager.Type("SERVER");
@@ -117,9 +119,9 @@ DeviceList dl=new DeviceList();
     ```
     bluetoothManager.sendText("your message",playerId)
     ```<br><br>
-    To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
-    </li>
-    <li>CONNECTING AS CLIENT:-<br><br>
+    To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.
+    
+   ## CONNECTING AS CLIENT:-
     ```
     bluetoothManager.Type("CLIENT");
     ```//now you will be able to a single server device
@@ -158,7 +160,7 @@ To get the ID's of all connected devices call ```getAllConnectedDevices()``` des
 ## Sample code for MainActivity [Wiki](https://github.com/pkarira/Androble/wiki)
 
 
-</li>
+
     <h2>App Using This Library</h2>
     <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-24.png" width="300">
 <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-43.png" width="300">
