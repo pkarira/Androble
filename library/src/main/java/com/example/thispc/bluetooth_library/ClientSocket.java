@@ -16,16 +16,16 @@ public class ClientSocket {
     public ArrayList<UUID> mUuids;
     public BluetoothAdapter bluetoothAdapter;
     ConnectingThread connectingThread;
-    String check=null;
+    String check = null;
     SocketManager socketManager;
-    BluetoothSocket finalBluetoothSocket=null;
+    BluetoothSocket finalBluetoothSocket = null;
     receivemsg recMsg1;
-    public void startConnection(BluetoothAdapter a,String s)
-    {
-        recMsg1=new receivemsg();
+
+    public void startConnection(BluetoothAdapter a, String s) {
+        recMsg1 = new receivemsg();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
-        bluetoothAdapter=a;
-        mUuids= new ArrayList<UUID>();
+        bluetoothAdapter = a;
+        mUuids = new ArrayList<UUID>();
         mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
         mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
         mUuids.add(UUID.fromString("e442e09a-51f3-4a7b-91cb-f638491d1412"));
@@ -40,6 +40,7 @@ public class ClientSocket {
             }
         }
     }
+
     private class ConnectingThread extends Thread {
         private final BluetoothDevice bluetoothDevice;
         private final BluetoothSocket bluetoothSocket;
@@ -55,6 +56,7 @@ public class ClientSocket {
             }
             bluetoothSocket = temp;
         }
+
         public void run() {
             bluetoothAdapter.cancelDiscovery();
 
@@ -68,11 +70,12 @@ public class ClientSocket {
                     closeException.printStackTrace();
                 }
             }
-            if (bluetoothSocket!= null && bluetoothDevice != null) {
-                check="connected";
+            if (bluetoothSocket != null && bluetoothDevice != null) {
+                check = "connected";
                 connected(bluetoothSocket);
             }
         }
+
         public void cancel() {
             try {
                 bluetoothSocket.close();
@@ -81,23 +84,23 @@ public class ClientSocket {
             }
         }
     }
-    public void connected(BluetoothSocket bluetoothSocket)
-    {
+
+    public void connected(BluetoothSocket bluetoothSocket) {
         recMsg1.call("connected");
-        socketManager=new SocketManager(bluetoothSocket);
+        socketManager = new SocketManager(bluetoothSocket);
         socketManager.start();
-        socketManager.write(("/"+bluetoothAdapter.getName()).getBytes());
-        finalBluetoothSocket=bluetoothSocket;
+        socketManager.write(("/" + bluetoothAdapter.getName()).getBytes());
+        finalBluetoothSocket = bluetoothSocket;
     }
-    public void write(String s)
-    {
-        if(finalBluetoothSocket!= null)
-        {
+
+    public void write(String s) {
+        if (finalBluetoothSocket != null) {
             socketManager.write(s.getBytes());
         }
     }
-    public  void disconnectClient() {
-        if(socketManager!=null)
-        socketManager.disconnect2();
+
+    public void disconnectClient() {
+        if (socketManager != null)
+            socketManager.disconnect2();
     }
 }
