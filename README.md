@@ -104,9 +104,8 @@ receiceMessage  rm = new receiceMessage();
 DeviceList dl=new DeviceList();
 ```
 
- ## CONNECTING AS SERVER:-
-  
-  
+<ul style="list-style-type:disc">
+     <li>CONNECTING AS SERVER:-<br><br>
     Call Type funtion of BluetoothManager class and pass "SERVER" as parameter:
     ```
     bluetoothManager.Type("SERVER");
@@ -119,9 +118,9 @@ DeviceList dl=new DeviceList();
     ```
     bluetoothManager.sendText("your message",playerId)
     ```<br><br>
-    To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.
-    
-   ## CONNECTING AS CLIENT:-
+    To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
+    </li>
+<li>CONNECTING AS CLIENT:-<br><br>
     ```
     bluetoothManager.Type("CLIENT");
     ```//now you will be able to a single server device
@@ -158,18 +157,9 @@ bluetoothManager.clientToClient("your message",id)
 where id is the id of connected devices<br>
 To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
 ## Sample code for MainActivity [Wiki](https://github.com/pkarira/Androble/wiki)
+</li>
 
-
-
-    <h2>App Using This Library</h2>
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-24.png" width="300">
-<img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-43.png" width="300">
-  <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-16-03.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-16-13.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-17-08.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-18-07.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-18-17.png" width="300">
-<img src ="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/multidevice_screenshots/Screenshot_2016-06-30-02-14-03.png" width="300">
+    
 # License
 
 * [Apache Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
