@@ -145,12 +145,12 @@ DeviceList dl=new DeviceList();
   
     For sending Message to any connected server use:
     
-```
+```java
  bluetoothManager.sendText("your message")
 ```
 
 For sending Message to any onter client use:<br>
- ```
+ ```java
 bluetoothManager.clientToClient("your message",id)
  ```
 where id is the id of connected devices<br>
