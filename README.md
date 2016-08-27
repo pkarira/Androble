@@ -132,24 +132,28 @@ DeviceList dl=new DeviceList();
     bluetoothManager.setListObject(dl);
     ```<br><br>
     Now from the obtained list of available devices select server device you want to connect to and pass its complete string to connectTo(String s) function like:<br>
-    let listView is your ListView Object , <br><br>
+    let listView is your ListView Object ,
+    
+    
     ```java
-    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {<br>
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override<br>
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {<br>
-                String itemValue = (String) listView.getItemAtPosition(position);<br>
-                bluetoothManager.connectTo(itemValue);<br><br>
-    For sending Message to any connected server use:<br>
-    ```
-    ```
-bluetoothManager.sendText("your message")
-```<br><br>
-For sending Message to any onter client use:<br>
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String itemValue = (String) listView.getItemAtPosition(position);
+                bluetoothManager.connectTo(itemValue);
+  ```
+  
+    For sending Message to any connected server use:
+```java
+ bluetoothManager.sendText("your message")
 ```
+
+For sending Message to any onter client use:<br>
+ ```java
 bluetoothManager.clientToClient("your message",id)
-```<br>
+ ```
 where id is the id of connected devices<br>
-To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
+To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.
 </li>
     <h2>App Using This Library</h2>
     <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-24.png" width="300">
