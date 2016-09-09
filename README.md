@@ -35,9 +35,14 @@ public void sendText(String s,int id)
 Allows to send message from server to client specifying the id of client.
 
 ```java
-public StringBuilder deviceList()
+public String clientToClient(String s, int id)
 ```
-Server can fetch list of all connected clients with respective ids.
+Allows to send message from a client to another client specifying the id of recepient client.
+
+```java
+public String getAllConnectedDevices()
+```
+To fetch list of all connected devices with respective ids.
 
 ```java
 public void setMessageObject(Object myObject)
@@ -48,6 +53,11 @@ Sets the observer object that fetches received messages.
 public void setListObject(Object myObject)
 ```
 Sets the observer object that fetches list of detected devices for client side.
+
+```java
+public String disconnect()
+```
+To disable your connection.
 
 
 ## Usage
@@ -82,46 +92,74 @@ class ReceiveMessage implements Observer {
 }
 ```
 
-Now get instance of Bluetooth manager classike :<br>
-BluetoothManager bluetoothManager= BluetoothManager.getInstance();<br><br>
-now create objects of DeviceList and receiceMessage class<br>
-receiceMessage  rm = new receiceMessage();<br><br>
-DeviceList dl=new DeviceList();<br><br>
+Now get instance of Bluetooth manager class like :<br>
+```java
+BluetoothManager bluetoothManager= BluetoothManager.getInstance();
+```
+now create objects of DeviceList and receiceMessage class like:<br>
+```java
+receiceMessage  rm = new receiceMessage();
+```
+```java
+DeviceList dl=new DeviceList();
+```
+
 <ul style="list-style-type:disc">
-   <li>CONNECTING AS SERVER:-<br><br>
-    Call Type funtion of BluetoothManager class and pass "server" as parameter:
-    bluetoothManager.Type("server");<br>//now you will be able to connect upto 4 devices<br><br>
+     <li>CONNECTING AS SERVER:-<br><br>
+    Call Type funtion of BluetoothManager class and pass "SERVER" as parameter:
+    ```
+    bluetoothManager.Type("SERVER");
+    ```//now you will be able to connect upto 4 devices<br><br>
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
-    bluetoothManager.setMessageObject(rm);<br><br>
+    ```
+    bluetoothManager.setMessageObject(rm);
+    ```<br><br>
     For sending Message to any connected client use:<br>
-    bluetoothManager.sendText("your message",playerId)<br><br>
-    To get the ID's of all connected client call deviceList() described above.<br><br>
+    ```
+    bluetoothManager.sendText("your message",playerId)
+    ```<br><br>
+    To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
     </li>
-    <li>CONNECTING AS CLIENT:-<br><br>
-    bluetoothManager.Type("client");//now you will be able to a single server device
+<li>CONNECTING AS CLIENT:-<br><br>
+    ```
+    bluetoothManager.Type("CLIENT");
+    ```//now you will be able to a single server device
     pass receiveMessage Object to setMessageObject(receiceMessage rm) like:<br>
-    bluetoothManager.setMessageObject(rm);<br><br>
+    ```
+    bluetoothManager.setMessageObject(rm);
+    ```<br><br>
     pass DeviceList Object to setListObject(DeviceList dl) like:<br>
-    bluetoothManager.setListObject(dl);<br><br>
+    ```
+    bluetoothManager.setListObject(dl);
+    ```<br><br>
     Now from the obtained list of available devices select server device you want to connect to and pass its complete string to connectTo(String s) function like:<br>
-    let listView is your ListView Object , <br><br>
-    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {<br>
+    let listView is your ListView Object ,
+    
+    
+    ```java
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override<br>
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {<br>
-                String itemValue = (String) listView.getItemAtPosition(position);<br>
-                bluetoothManager.connectTo(itemValue);<br><br>
-    For sending Message to any connected server use:<br>
-bluetoothManager.sendText("your message")<br><br>
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String itemValue = (String) listView.getItemAtPosition(position);
+                bluetoothManager.connectTo(itemValue);
+  ```
+  
+    For sending Message to any connected server use:
+    
+```java
+ bluetoothManager.sendText("your message")
+```
+
+For sending Message to any onter client use:<br>
+ ```java
+bluetoothManager.clientToClient("your message",id)
+ ```
+where id is the id of connected devices<br>
+To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.<br><br>
+## Sample code for MainActivity [Wiki](https://github.com/pkarira/Androble/wiki)
 </li>
-    <h2>App Using This Library</h2>
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-24.png" width="300">
-<img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-15-43.png" width="300">
-  <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-16-03.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-16-13.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-17-08.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-18-07.png" width="300">
-    <img src="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/twodevice_screenshots/Screenshot_2016-06-30-00-18-17.png" width="300">
-<img src ="https://raw.githubusercontent.com/sdsmdg/Mobile-Quiz/1c1d413897edc614418e063bbb01078fe75bb2ae/app/src/main/assets/multidevice_screenshots/Screenshot_2016-06-30-02-14-03.png" width="300">
+
+    
 # License
 
 * [Apache Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)

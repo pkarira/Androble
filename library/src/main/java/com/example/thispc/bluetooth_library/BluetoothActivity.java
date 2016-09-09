@@ -1,4 +1,4 @@
-package com.example.thispc.demo;
+package com.example.thispc.bluetooth_library;
 
 /**
  * Created by this pc on 02-08-2016.
@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-abstract public class Discovery extends Activity {
+abstract public class BluetoothActivity extends AppCompatActivity {
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
     private static final int Finished_Activity = 3;
@@ -26,12 +28,12 @@ abstract public class Discovery extends Activity {
     public static BluetoothAdapter bluetoothAdapter;
     boolean discoverymode=false;
     public ArrayList<String> list;
-    public deviceList dl;
+    public deviceList device_list;
     public void enableBluetooth()
     {
-        dl=new deviceList();
+        device_list=new deviceList();
         list= new ArrayList<String>();
-        dl.addObserver((Observer)BluetoothManager.device_list);
+        device_list.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
@@ -41,8 +43,9 @@ abstract public class Discovery extends Activity {
         if (requestCode == ENABLE_BT_REQUEST_CODE) {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
-                dl.call("bluetooth enabled");
+                device_list.call("bluetooth enabled");
                 Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
+
                 makeDiscoverable();
                 discoverDevices();
 
@@ -66,7 +69,7 @@ abstract public class Discovery extends Activity {
         if (bluetoothAdapter.startDiscovery()) {
             return "Discovering peers";
         } else {
-            return "Discovery failed to start.";
+            return "BluetoothActivity failed to start.";
         }
     }
     protected void makeDiscoverable() {
@@ -91,12 +94,11 @@ abstract public class Discovery extends Activity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                dl.call(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+                device_list.call(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
             }
         }
     };
 }
-
 class deviceList extends Observable
 {
     String s1;
@@ -106,8 +108,7 @@ class deviceList extends Observable
         setChanged();
         notifyObservers(s);
     }
-    public synchronized String getContent()
-    {
+    public synchronized String getContent() {
         return s1;
     }
 }
