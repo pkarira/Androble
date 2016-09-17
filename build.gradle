@@ -6,8 +6,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
+<<<<<<< HEAD
         'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
         'com.github.dcendents:android-maven-gradle-plugin:1.3'
+=======
+
+>>>>>>> 3320ff2fdd177e7ef1c75d1daf74566da8ab40f5
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
