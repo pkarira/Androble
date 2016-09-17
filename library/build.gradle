@@ -23,7 +23,3 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 3320ff2fdd177e7ef1c75d1daf74566da8ab40f5
