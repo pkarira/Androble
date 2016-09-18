@@ -94,13 +94,13 @@ public class ClientSocket {
         finalBluetoothSocket = bluetoothSocket;
     }
 
-    private void write(String s) {
+    public void write(String s) {
         if (finalBluetoothSocket != null) {
             socketManager.write(s.getBytes());
         }
     }
 
-    private void disconnectClient() {
+    public void disconnectClient() {
         if (socketManager != null)
             socketManager.disconnect2();
     }
