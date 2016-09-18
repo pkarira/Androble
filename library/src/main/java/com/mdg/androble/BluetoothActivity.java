@@ -19,7 +19,7 @@ import java.util.Observer;
 
 
 public abstract class BluetoothActivity extends AppCompatActivity {
-    
+
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
     private static final int Finished_Activity = 3;
@@ -29,7 +29,7 @@ public abstract class BluetoothActivity extends AppCompatActivity {
     public ArrayList<String> list;
     private DeviceList deviceList;
 
-    private void enableBluetooth() {
+    protected void enableBluetooth() {
         deviceList =new DeviceList();
         list= new ArrayList<>();
         deviceList.addObserver((Observer)BluetoothManager.device_list);
