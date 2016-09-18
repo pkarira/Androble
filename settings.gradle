@@ -1,1 +1,1 @@
-include ':app', ':bluetooth_library2'
+include ':app', ':library'
