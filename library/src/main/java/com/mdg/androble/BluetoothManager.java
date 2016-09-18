@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 public class BluetoothManager {
 
-    enum ConnectionType {
+    public enum ConnectionType {
         client, server
     }
 
@@ -43,7 +43,7 @@ public class BluetoothManager {
         device_list = myObject;
     }
 
-    public void scanClients()
+    void scanClients()
 
     {
         serverSocket.startConnection(BluetoothActivity.bluetoothAdapter);

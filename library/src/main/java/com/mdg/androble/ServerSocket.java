@@ -20,11 +20,11 @@ public class ServerSocket {
     int socketCounter = 0;
     public static BluetoothSocket blueSocket_array[];
     public static BluetoothAdapter bluetoothAdapter;
-    receivemsg recMsg1;
+    ReceiveMsg recMsg1;
     SocketManager arraysm[];
 
     public void startConnection(BluetoothAdapter bluetoothAdapter1) {
-        recMsg1 = new receivemsg();
+        recMsg1 = new ReceiveMsg();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
         blueSocket_array = new BluetoothSocket[4];
         mUuids = new ArrayList<UUID>();

@@ -18,42 +18,43 @@ import java.util.ArrayList;
 import java.util.Observer;
 
 
-abstract public class BluetoothActivity extends AppCompatActivity {
+public abstract class BluetoothActivity extends AppCompatActivity {
+    
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
     private static final int Finished_Activity = 3;
     private static final int DISCOVERABLE_DURATION = 300;
-    public static BluetoothAdapter bluetoothAdapter;
-    boolean discoverymode=false;
+    static BluetoothAdapter bluetoothAdapter;
+    private boolean discoveryMode =false;
     public ArrayList<String> list;
-    public deviceList device_list;
-    public void enableBluetooth()
-    {
-        device_list=new deviceList();
-        list= new ArrayList<String>();
-        device_list.addObserver((Observer)BluetoothManager.device_list);
+    private DeviceList deviceList;
+
+    private void enableBluetooth() {
+        deviceList =new DeviceList();
+        list= new ArrayList<>();
+        deviceList.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ENABLE_BT_REQUEST_CODE) {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
-                device_list.call("bluetooth enabled");
+                deviceList.call("bluetooth enabled");
                 Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
 
                 makeDiscoverable();
                 discoverDevices();
-
 
             } else {
                 Toast.makeText(getApplicationContext(), "Bluetooth is not enabled.", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == DISCOVERABLE_BT_REQUEST_CODE) {
             if (resultCode == DISCOVERABLE_DURATION) {
-                discoverymode=true;
+                discoveryMode =true;
                 Toast.makeText(getApplicationContext(), "Your device is now discoverable", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Fail to enable discoverable mode.", Toast.LENGTH_SHORT).show();
@@ -63,18 +64,21 @@ abstract public class BluetoothActivity extends AppCompatActivity {
 
         }
     }
-    public String discoverDevices() {
+
+    private String discoverDevices() {
         if (bluetoothAdapter.startDiscovery()) {
             return "Discovering peers";
         } else {
             return "BluetoothActivity failed to start.";
         }
     }
+
     protected void makeDiscoverable() {
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, DISCOVERABLE_DURATION);
         startActivityForResult(discoverableIntent, DISCOVERABLE_BT_REQUEST_CODE);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -87,12 +91,13 @@ abstract public class BluetoothActivity extends AppCompatActivity {
         super.onPause();
         this.unregisterReceiver(broadcastReceiver);
     }
+
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                device_list.call(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+                deviceList.call(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
             }
         }
     };

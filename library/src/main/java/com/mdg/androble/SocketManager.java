@@ -10,16 +10,17 @@ import java.util.Observer;
 /**
  * Created by this pc on 02-08-2016.
  */
-public class SocketManager extends Thread {
+
+class SocketManager extends Thread {
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
     private final BluetoothSocket mBluetoothSocket;
-    BluetoothSocket mbluetoothSocket = null;
+
     public static String my_id = null;
     public static StringBuilder sb = new StringBuilder();
-    int playerid = 0;
-    receivemsg recMsg;
+    private int playerid = 0;
+    ReceiveMsg recMsg;
 
     public SocketManager(BluetoothSocket socket) {
         mmSocket = socket;
@@ -30,14 +31,14 @@ public class SocketManager extends Thread {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
     }
 
     public void run() {
-        recMsg = new receivemsg();
+        recMsg = new ReceiveMsg();
         recMsg.addObserver((Observer) BluetoothManager.recieve_msg);
         byte[] buffer = new byte[1024];
         int bytes1 = 0;
@@ -46,7 +47,7 @@ public class SocketManager extends Thread {
         // Keep listening to the InputStream while connected
         while (true) {
             try {
-                String readMessage = "";
+                String readMessage;
                 bytes1 = mmInStream.read(buffer);
                 if (bytes1 != bytes2) {
                     readMessage = new String(buffer, 0, bytes1);
@@ -62,10 +63,11 @@ public class SocketManager extends Thread {
                     } else if (readMessage.contains("(") && readMessage.contains(")")) {
                         BluetoothManager.serverSocket.write(sb.substring(0), Integer.parseInt(String.valueOf(readMessage.charAt(1))));
                     } else
-                        recMsg.call(readMessage.substring(0));
+                        recMsg.call(readMessage);
                     bytes2 = bytes1;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

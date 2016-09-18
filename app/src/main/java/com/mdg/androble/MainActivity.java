@@ -93,7 +93,7 @@ public void send(View v)
         @Override
         public void update(Observable observable, Object data) {
             Log.e("pulkit", "in received");
-           final String msg = ((receivemsg)observable).getMessage();
+           final String msg = ((ReceiveMsg)observable).getMessage();
             runOnUiThread(new Runnable() {
                 public void run() {
                     Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();
@@ -104,11 +104,11 @@ public void send(View v)
     class DeviceList implements Observer {
         @Override
         public void update(Observable observable, Object data) {
-            if(((deviceList)observable).getContent().equals("bluetooth enabled"))
+            if(((com.mdg.androble.DeviceList)observable).getContent().equals("bluetooth enabled"))
             {
                 bm.scanClients();
             }else
-            adapter.add(((deviceList)observable).getContent());
+            adapter.add(((com.mdg.androble.DeviceList)observable).getContent());
         }
     }
 }

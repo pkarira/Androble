@@ -13,19 +13,19 @@ import java.util.UUID;
  * Created by this pc on 02-08-2016.
  */
 public class ClientSocket {
-    public ArrayList<UUID> mUuids;
-    public BluetoothAdapter bluetoothAdapter;
-    ConnectingThread connectingThread;
+    private ArrayList<UUID> mUuids;
+    private BluetoothAdapter bluetoothAdapter;
+    private ConnectingThread connectingThread;
     String check = null;
-    SocketManager socketManager;
-    BluetoothSocket finalBluetoothSocket = null;
-    receivemsg recMsg1;
+    private SocketManager socketManager;
+    private BluetoothSocket finalBluetoothSocket = null;
+    private ReceiveMsg recMsg1;
 
     public void startConnection(BluetoothAdapter a, String s) {
-        recMsg1 = new receivemsg();
+        recMsg1 = new ReceiveMsg();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
         bluetoothAdapter = a;
-        mUuids = new ArrayList<UUID>();
+        mUuids = new ArrayList<>();
         mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
         mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
         mUuids.add(UUID.fromString("e442e09a-51f3-4a7b-91cb-f638491d1412"));
@@ -37,6 +37,7 @@ public class ClientSocket {
                 connectingThread = new ConnectingThread(bluetoothDevice, mUuids.get(i));
                 connectingThread.start();
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -45,7 +46,7 @@ public class ClientSocket {
         private final BluetoothDevice bluetoothDevice;
         private final BluetoothSocket bluetoothSocket;
 
-        public ConnectingThread(BluetoothDevice device, UUID uuid) {
+        ConnectingThread(BluetoothDevice device, UUID uuid) {
 
             BluetoothSocket temp = null;
             bluetoothDevice = device;
@@ -85,7 +86,7 @@ public class ClientSocket {
         }
     }
 
-    public void connected(BluetoothSocket bluetoothSocket) {
+    private void connected(BluetoothSocket bluetoothSocket) {
         recMsg1.call("connected");
         socketManager = new SocketManager(bluetoothSocket);
         socketManager.start();
@@ -93,13 +94,13 @@ public class ClientSocket {
         finalBluetoothSocket = bluetoothSocket;
     }
 
-    public void write(String s) {
+    private void write(String s) {
         if (finalBluetoothSocket != null) {
             socketManager.write(s.getBytes());
         }
     }
 
-    public void disconnectClient() {
+    private void disconnectClient() {
         if (socketManager != null)
             socketManager.disconnect2();
     }
