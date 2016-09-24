@@ -5,6 +5,19 @@
  Androble uses Android's Bluetooth API and establishes RFCOMM channels. The server listens for various clients using a unique UUID and the client having the same UUID is connected to the server. In multiple devices, server creates 4 RFCOMM channels with 4 different UUIDs and then each connection is maintained on a different thread by the server so that if anyhow connection with a particular client fails then the connection with other clients is uninterrupted.
  
  
+ <h3>Dependency</h3>
+ Add dependency to build.gradel of your app
+ ```java
+ dependencies
+ {
+ compile 'com.mdg.androble:library:0.1.2'
+ }
+ ```
+ And add this maven url in repository section of project's build.gradel
+ ```java
+maven { url 'https://dl.bintray.com/pkarira/Androble'}
+ ```
+ 
  <h3>Reference</h3>
  
  BluetoothManager class is the master class of this library and contains the following functions:
@@ -111,7 +124,7 @@
       bluetoothManager.setMessageObject(receiveMessage);
       bluetoothManager.setListObject(deviceList);
   ```
-   <h3>Connecting as Server</h3>:-
+   <h3>Connecting as Server:-</h3>
    
 Call Type funtion of BluetoothManager class and pass "SERVER" as parameter:<br>
          ```
@@ -123,7 +136,7 @@ To send text to any client where id is Id of client:-<br>
         ```<br>
 To get the ID's of all connected devices call ```getAllConnectedDevices()``` described above.
     
-   <h3>Connecting as Client</h3>:-
+   <h3>Connecting as Client:-</h3>
    ```
       bluetoothManager.Type("CLIENT");
    ```
