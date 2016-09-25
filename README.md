@@ -6,14 +6,14 @@
  
  
  <h3>Dependency</h3>
- Add dependency to build.gradel of your app
+ Add dependency to build.gradle of your app
  ```java
  dependencies
  {
  compile 'com.mdg.androble:library:0.1.2'
  }
  ```
- And add this maven url in repository section of project's build.gradel
+ And add this maven url in repository section of project's build.gradle
  ```java
 maven { url 'https://dl.bintray.com/pkarira/Androble'}
  ```
