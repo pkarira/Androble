@@ -100,7 +100,7 @@ class SocketManager extends Thread {
     }
 }
 
-/*class receivemsg extends Observable {
+/*class ReceiveMsg extends Observable {
     String message = "";
 
     public void call(String s) {

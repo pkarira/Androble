@@ -26,12 +26,10 @@ public abstract class BluetoothActivity extends AppCompatActivity {
     private static final int DISCOVERABLE_DURATION = 300;
     static BluetoothAdapter bluetoothAdapter;
     private boolean discoveryMode =false;
-    public ArrayList<String> list;
     private DeviceList deviceList;
 
     protected void enableBluetooth() {
         deviceList =new DeviceList();
-        list= new ArrayList<>();
         deviceList.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);

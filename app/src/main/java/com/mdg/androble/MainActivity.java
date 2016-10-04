@@ -15,16 +15,14 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class MainActivity extends BluetoothActivity {
+public class MainActivity extends BluetoothActivity implements MessageReceiveListener{
 
     private BluetoothManager bluetoothManager;
     private receiveMessage receiveMessage;
     private DeviceList deviceList;
-    private String type = "";
-
+    private BluetoothManager.ConnectionType type;
     private ListView listView;
-    private EditText et1;
-    private EditText et2;
+    private EditText et1, et2;
     private ArrayAdapter arrayAdapter;
     
     private final static String TAG = "MainActivity";
@@ -53,13 +51,11 @@ public class MainActivity extends BluetoothActivity {
     }
 
     public void client(View v) {
-        type = "client";
-        bluetoothManager.Type(type);
+        type = BluetoothManager.ConnectionType.CLIENT;
     }
 
     public void server(View v) {
-        type = "server";
-        bluetoothManager.Type(type);
+        type = BluetoothManager.ConnectionType.SERVER;
     }
 
     public void disconnect(View v)  {
@@ -79,14 +75,8 @@ public class MainActivity extends BluetoothActivity {
     }
 
     public void start(View v) {
-         bluetoothManager.setMessageObject(receiveMessage);
-         bluetoothManager.setListObject(deviceList);
-        if (type.equals("client")) {
-            enableBluetooth();
-        }
-        if (type.equals("server")) {
-           enableBluetooth();
-        }
+        bluetoothManager.init(receiveMessage,deviceList,type);
+        enableBluetooth();
     }
 
     public void send(View v) {
@@ -96,6 +86,11 @@ public class MainActivity extends BluetoothActivity {
         if (type.equals("server")) {
             bluetoothManager.sendText(et1.getText().toString(),Integer.parseInt(et2.getText().toString()));
         }
+    }
+
+    @Override
+    public void onMessageReceived(int id, String message) {
+
     }
 
     private class receiveMessage implements Observer {
