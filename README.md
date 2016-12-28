@@ -13,10 +13,6 @@
  compile 'com.mdg.androble:library:0.1.2'
  }
  ```
- And add this maven url in repository section of project's build.gradle
- ```java
-maven { url 'https://dl.bintray.com/pkarira/Androble'}
- ```
  
  <h3>Reference</h3>
  
