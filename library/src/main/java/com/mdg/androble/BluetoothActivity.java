@@ -24,12 +24,10 @@ public abstract class BluetoothActivity extends AppCompatActivity {
 
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
-    private static final int FINISHED_ACTIVITY = 3;
     private static final int DISCOVERABLE_DURATION = 300;
-    static BluetoothAdapter bluetoothAdapter;
-    private boolean discoveryMode =false;
 
-    public ArrayList<String> deviceArrayList;
+    static BluetoothAdapter bluetoothAdapter;
+    public ArrayList<BluetoothDeviceInfo> deviceArrayList;
     public BluetoothManager bluetoothManager;
 
     @Override
@@ -49,39 +47,35 @@ public abstract class BluetoothActivity extends AppCompatActivity {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
                 bluetoothManager.scanClients();
-
-                Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.bluetooth_disable, Toast.LENGTH_SHORT).show();
                 makeDiscoverable();
                 discoverDevices();
 
             } else {
-                Toast.makeText(getApplicationContext(), "Bluetooth is not enabled.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),R.string.bluetooth_disable, Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == DISCOVERABLE_BT_REQUEST_CODE) {
             if (resultCode == DISCOVERABLE_DURATION) {
-                discoveryMode =true;
-                Toast.makeText(getApplicationContext(), "Your device is now discoverable", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.discoverable_enable, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "Fail to enable discoverable mode.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.discoverable_disable, Toast.LENGTH_SHORT).show();
             }
-        } else if (resultCode == FINISHED_ACTIVITY) {
-            bluetoothAdapter.disable();
-
         }
     }
 
-    private String discoverDevices() {
-        if (bluetoothAdapter.startDiscovery()) {
-            return "Discovering peers";
-        } else {
-            return "BluetoothActivity failed to start.";
-        }
-    }
-
-    protected void makeDiscoverable() {
+    protected void makeDiscoverable(){
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, DISCOVERABLE_DURATION);
         startActivityForResult(discoverableIntent, DISCOVERABLE_BT_REQUEST_CODE);
+    }
+
+    protected void discoverDevices() {
+        if(bluetoothAdapter.isDiscovering()){
+            bluetoothAdapter.cancelDiscovery();
+        }
+        if (!bluetoothAdapter.startDiscovery()) {
+            Toast.makeText(getApplicationContext(), R.string.bluetooth_start_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -102,9 +96,17 @@ public abstract class BluetoothActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                deviceArrayList.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+                deviceArrayList.add(new BluetoothDeviceInfo(bluetoothDevice.getName(), bluetoothDevice.getAddress()));
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(bluetoothAdapter.isDiscovering()){
+            bluetoothAdapter.cancelDiscovery();
+        }
+    }
 
 }
