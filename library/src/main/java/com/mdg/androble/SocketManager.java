@@ -14,7 +14,7 @@ import java.util.UUID;
  * Created by this pc on 02-08-2016.
  */
 
-public class SocketManger {
+public class SocketManager {
 
     public ArrayList<UUID> mUuids;
     String[] mUUIDStrings;
@@ -30,7 +30,7 @@ public class SocketManger {
 
     public Context context;
 
-    public SocketManger(Context context){
+    public SocketManager(Context context){
         this.context = context;
     }
 
@@ -47,7 +47,6 @@ public class SocketManger {
         for(int i=0;i<mUUIDStrings.length;i++){
             mUuids.add(UUID.fromString(mUUIDStrings[i]));
         }
-
         bluetoothAdapter = bluetoothAdapter1;
         serverSockets = new ServerSocket[4];
         listeningThread = new ListeningThread();

@@ -14,7 +14,7 @@ public class BluetoothManager {
     }
 
     public ConnectionType connectionType;
-    public static SocketManger serverSocket;
+    public static SocketManager serverSocket;
     ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
@@ -22,7 +22,7 @@ public class BluetoothManager {
     private Context context;
 
     private BluetoothManager(Context context) {
-        serverSocket = new SocketManger(context);
+        serverSocket = new SocketManager(context);
         clientSocket = new ClientSocket();
         this.context = context;
     }
