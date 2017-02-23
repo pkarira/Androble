@@ -23,10 +23,10 @@ public class SocketManager {
     private int recheckSocket = 0;
     private int socketCounter = 0;
     private static BluetoothSocket bluetoothSockets[];
-    static BluetoothAdapter bluetoothAdapter;
+    private BluetoothAdapter bluetoothAdapter;
     private ReceiveMessage receiveMessage;
     private ServerSocket serverSockets[];
-    Context context;
+    private Context context;
 
     public SocketManager(Context context){
         this.context = context;

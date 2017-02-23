@@ -1,33 +1,37 @@
 package com.mdg.androble;
 
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
+
+import com.mdg.androble.listeners.MessageReceiveListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
- * Created by this pc on 02-08-2016.
+ * @author Pulkit Karira, Deepankar Agrawal
+ *
+ * This class act as main manager.
  */
+
 public class BluetoothManager {
 
     public enum ConnectionType {
         CLIENT, SERVER
     }
 
-    public ConnectionType connectionType;
-    public static SocketManager serverSocket;
-    ClientSocket clientSocket;
-    public static Object recieve_msg;
+    private ConnectionType connectionType;
 
     private static BluetoothManager bluetoothManager;
-    private Context context;
+    private ClientSocket clientSocket;
+    private SocketManager socketManager;
+    private ArrayList<MessageReceiveListener> messageReceiveListeners;
+
 
     private BluetoothManager(Context context) {
-        serverSocket = new SocketManager(context);
+        socketManager = new SocketManager(context);
         clientSocket = new ClientSocket();
-        this.context = context;
+
+        messageReceiveListeners = new ArrayList<>();
     }
 
     public static BluetoothManager getInstance(Context context) {
@@ -39,25 +43,22 @@ public class BluetoothManager {
 
     /**
      *
-     * @param msgObject takes msg obj
-     * @param connectionType sdfd
+     * @param connectionType connection type, SERVER or CLIENT
+     * @param messageReceiveListener listener object to receive messages
      */
 
-    public void init(Object msgObject, ConnectionType connectionType){
+    public void init(ConnectionType connectionType, MessageReceiveListener messageReceiveListener){
         setType(connectionType);
-        setMessageObject(msgObject);
+        addOnMessageReceiveListener(messageReceiveListener);
     }
 
     public void setType(ConnectionType connectionType) {
         this.connectionType = connectionType;
     }
 
-    public void setMessageObject(Object myObject){
-        recieve_msg = myObject;
-    }
 
     void scanClients() {
-        serverSocket.startConnection(BluetoothActivity.bluetoothAdapter);
+        socketManager.startConnection(BluetoothActivity.bluetoothAdapter);
     }
 
     public void connectTo(String s) {
@@ -75,13 +76,13 @@ public class BluetoothManager {
     }
 
     public void sendText(String s1, int id) {
-        if (id <= (serverSocket.getSocketCounter() + 1)) {
-            serverSocket.write(s1, id);
+        if (id <= (socketManager.getSocketCounter() + 1)) {
+            socketManager.write(s1, id);
         }
     }
 
     public void clientToClient(String s1, int id) {
-        if (id <= (serverSocket.getSocketCounter() + 1)) {
+        if (id <= (socketManager.getSocketCounter() + 1)) {
             clientSocket.write("<" + id + ">" + s1);
         }
     }
@@ -100,10 +101,18 @@ public class BluetoothManager {
             clientSocket.disconnectClient();
             return "DISCONNECTED";
         } else if (connectionType.equals(ConnectionType.SERVER)) {
-            serverSocket.disconnectServer();
+            socketManager.disconnectServer();
             return "DISCONNECTED";
         }
         return null;
+    }
+
+    public void addOnMessageReceiveListener(MessageReceiveListener messageReceiveListener){
+        messageReceiveListeners.add(messageReceiveListener);
+    }
+
+    public void removeOnMessageReceiveListener(MessageReceiveListener messageReceiveListener){
+        messageReceiveListeners.remove(messageReceiveListener);
     }
 
 }

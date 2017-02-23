@@ -13,6 +13,7 @@ import java.util.UUID;
  * Created by this pc on 02-08-2016.
  */
 public class ClientSocket {
+
     private ArrayList<UUID> mUuids;
     private BluetoothAdapter bluetoothAdapter;
     private ConnectingThread connectingThread;
@@ -71,7 +72,7 @@ public class ClientSocket {
                     closeException.printStackTrace();
                 }
             }
-            if (bluetoothSocket != null && bluetoothDevice != null) {
+            if (bluetoothDevice != null) {
                 check = "connected";
                 connected(bluetoothSocket);
             }

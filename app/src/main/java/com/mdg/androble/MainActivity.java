@@ -9,13 +9,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.mdg.androble.listeners.MessageReceiveListener;
 import com.mdg.androble.testlibrary.R;
 
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class MainActivity extends BluetoothActivity implements MessageReceiveListener{
+public class MainActivity extends BluetoothActivity implements MessageReceiveListener {
 
     private receiveMessage receiveMessage;
     private BluetoothManager.ConnectionType type;
@@ -71,7 +72,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     }
 
     public void start(View v){
-        bluetoothManager.init(receiveMessage,type);
+        bluetoothManager.init(type, this);
         enableBluetooth();
     }
 
@@ -85,7 +86,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     }
 
     @Override
-    public void onMessageReceived(int id, String message) {
+    public void onReceive(int id, String message) {
 
     }
 
