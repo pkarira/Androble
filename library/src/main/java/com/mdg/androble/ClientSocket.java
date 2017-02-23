@@ -17,7 +17,7 @@ public class ClientSocket {
     private BluetoothAdapter bluetoothAdapter;
     private ConnectingThread connectingThread;
     String check = null;
-    private SocketManager socketManager;
+    private ServerSocket serverSocket;
     private BluetoothSocket finalBluetoothSocket = null;
     private ReceiveMsg recMsg1;
 
@@ -88,20 +88,20 @@ public class ClientSocket {
 
     private void connected(BluetoothSocket bluetoothSocket) {
         recMsg1.call("connected");
-        socketManager = new SocketManager(bluetoothSocket);
-        socketManager.start();
-        socketManager.write(("/" + bluetoothAdapter.getName()).getBytes());
+        serverSocket = new ServerSocket(bluetoothSocket);
+        serverSocket.start();
+        serverSocket.write(("/" + bluetoothAdapter.getName()).getBytes());
         finalBluetoothSocket = bluetoothSocket;
     }
 
     public void write(String s) {
         if (finalBluetoothSocket != null) {
-            socketManager.write(s.getBytes());
+            serverSocket.write(s.getBytes());
         }
     }
 
     public void disconnectClient() {
-        if (socketManager != null)
-            socketManager.disconnect2();
+        if (serverSocket != null)
+            serverSocket.disconnect2();
     }
 }
