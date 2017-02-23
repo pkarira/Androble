@@ -17,9 +17,7 @@ import java.util.Observer;
 
 public class MainActivity extends BluetoothActivity implements MessageReceiveListener{
 
-    private BluetoothManager bluetoothManager;
     private receiveMessage receiveMessage;
-    private DeviceList deviceList;
     private BluetoothManager.ConnectionType type;
     private ListView listView;
     private EditText et1, et2;
@@ -32,9 +30,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bluetoothManager = BluetoothManager.getInstance(getApplicationContext());
         receiveMessage = new receiveMessage();
-        deviceList = new DeviceList();
 
         listView = (ListView) findViewById(R.id.listView);
         et1=(EditText)findViewById(R.id.editText);
@@ -74,8 +70,8 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
         Toast.makeText(getApplicationContext(), bluetoothManager.getAllConnectedDevices(),Toast.LENGTH_LONG).show();
     }
 
-    public void start(View v) {
-        bluetoothManager.init(receiveMessage,deviceList,type);
+    public void start(View v){
+        bluetoothManager.init(receiveMessage,type);
         enableBluetooth();
     }
 
@@ -106,14 +102,4 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
         }
     }
 
-    private class DeviceList implements Observer {
-        @Override
-        public void update(Observable observable, Object data) {
-            if(((com.mdg.androble.DeviceList)observable).getContent().equals("bluetooth enabled"))
-            {
-                bluetoothManager.scanClients();
-            }else
-            arrayAdapter.add(((com.mdg.androble.DeviceList)observable).getContent());
-        }
-    }
 }

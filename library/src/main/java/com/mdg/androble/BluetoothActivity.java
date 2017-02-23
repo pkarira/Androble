@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -22,15 +24,20 @@ public abstract class BluetoothActivity extends AppCompatActivity {
 
     private static final int ENABLE_BT_REQUEST_CODE = 1;
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
-    private static final int Finished_Activity = 3;
+    private static final int FINISHED_ACTIVITY = 3;
     private static final int DISCOVERABLE_DURATION = 300;
     static BluetoothAdapter bluetoothAdapter;
     private boolean discoveryMode =false;
-    private DeviceList deviceList;
+
+    public ArrayList<String> deviceArrayList;
+    public BluetoothManager bluetoothManager;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     protected void enableBluetooth() {
-        deviceList =new DeviceList();
-        deviceList.addObserver((Observer)BluetoothManager.device_list);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
@@ -41,9 +48,9 @@ public abstract class BluetoothActivity extends AppCompatActivity {
         if (requestCode == ENABLE_BT_REQUEST_CODE) {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
-                deviceList.call("bluetooth enabled");
-                Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
+                bluetoothManager.scanClients();
 
+                Toast.makeText(getApplicationContext(), "Bluetooth enabled." + "\n" + "Scanning for peers", Toast.LENGTH_SHORT).show();
                 makeDiscoverable();
                 discoverDevices();
 
@@ -57,7 +64,7 @@ public abstract class BluetoothActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(getApplicationContext(), "Fail to enable discoverable mode.", Toast.LENGTH_SHORT).show();
             }
-        } else if (resultCode == Finished_Activity) {
+        } else if (resultCode == FINISHED_ACTIVITY) {
             bluetoothAdapter.disable();
 
         }
@@ -85,7 +92,7 @@ public abstract class BluetoothActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause(){
         super.onPause();
         this.unregisterReceiver(broadcastReceiver);
     }
@@ -95,8 +102,9 @@ public abstract class BluetoothActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                deviceList.call(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+                deviceArrayList.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
             }
         }
     };
+
 }

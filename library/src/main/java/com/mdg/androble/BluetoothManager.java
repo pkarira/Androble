@@ -1,6 +1,9 @@
 package com.mdg.androble;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 
 import java.io.IOException;
 
@@ -17,7 +20,7 @@ public class BluetoothManager {
     public static SocketManager serverSocket;
     ClientSocket clientSocket;
     public static Object recieve_msg;
-    public static Object device_list;
+
     private static BluetoothManager bluetoothManager;
     private Context context;
 
@@ -28,7 +31,7 @@ public class BluetoothManager {
     }
 
     public static BluetoothManager getInstance(Context context) {
-        if (bluetoothManager == null) {
+        if (bluetoothManager == null){
             bluetoothManager = new BluetoothManager(context);
         }
         return bluetoothManager;
@@ -37,21 +40,16 @@ public class BluetoothManager {
     /**
      *
      * @param msgObject takes msg obj
-     * @param listObject dcs
      * @param connectionType sdfd
      */
-    public void init(Object msgObject,Object listObject, ConnectionType connectionType){
+
+    public void init(Object msgObject, ConnectionType connectionType){
         setType(connectionType);
-        setListObject(listObject);
         setMessageObject(msgObject);
     }
 
     public void setType(ConnectionType connectionType) {
         this.connectionType = connectionType;
-    }
-
-    public void setListObject(Object myObject){
-        device_list = myObject;
     }
 
     public void setMessageObject(Object myObject){
@@ -77,13 +75,13 @@ public class BluetoothManager {
     }
 
     public void sendText(String s1, int id) {
-        if (id <= (serverSocket.socketCounter + 1)) {
+        if (id <= (serverSocket.getSocketCounter() + 1)) {
             serverSocket.write(s1, id);
         }
     }
 
     public void clientToClient(String s1, int id) {
-        if (id <= (serverSocket.socketCounter + 1)) {
+        if (id <= (serverSocket.getSocketCounter() + 1)) {
             clientSocket.write("<" + id + ">" + s1);
         }
     }
@@ -107,4 +105,5 @@ public class BluetoothManager {
         }
         return null;
     }
+
 }

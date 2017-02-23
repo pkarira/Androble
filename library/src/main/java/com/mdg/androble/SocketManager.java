@@ -16,39 +16,37 @@ import java.util.UUID;
 
 public class SocketManager {
 
-    public ArrayList<UUID> mUuids;
-    String[] mUUIDStrings;
-
+    private ArrayList<UUID> mUuids;
+    private String[] mUUIDStrings;
     ListeningThread listeningThread;
-    boolean check;
-    int recheckSocket = 0;
-    int socketCounter = 0;
-    public static BluetoothSocket bluetoothSockets[];
-    public static BluetoothAdapter bluetoothAdapter;
-    ReceiveMessage recMsg1;
-    ServerSocket serverSockets[];
-
-    public Context context;
+    private boolean check;
+    private int recheckSocket = 0;
+    private int socketCounter = 0;
+    private static BluetoothSocket bluetoothSockets[];
+    static BluetoothAdapter bluetoothAdapter;
+    private ReceiveMessage receiveMessage;
+    private ServerSocket serverSockets[];
+    Context context;
 
     public SocketManager(Context context){
         this.context = context;
     }
 
-    public void startConnection(BluetoothAdapter bluetoothAdapter1) {
-        recMsg1 = new ReceiveMessage();
-        recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
+    public void startConnection(BluetoothAdapter bluetoothAdapter) {
+        receiveMessage = new ReceiveMessage();
+        receiveMessage.addObserver((Observer) BluetoothManager.recieve_msg);
         bluetoothSockets = new BluetoothSocket[mUUIDStrings.length];
 
-        /*
-            add uuid string array to list
+        /*  add uuid string array to list
          */
         mUuids = new ArrayList<>();
         mUUIDStrings = context.getResources().getStringArray(R.array.uuid_strings);
         for(int i=0;i<mUUIDStrings.length;i++){
             mUuids.add(UUID.fromString(mUUIDStrings[i]));
         }
-        bluetoothAdapter = bluetoothAdapter1;
-        serverSockets = new ServerSocket[4];
+        this.bluetoothAdapter = bluetoothAdapter;
+        serverSockets = new ServerSocket[mUUIDStrings.length];
+
         listeningThread = new ListeningThread();
         listeningThread.start();
     }
@@ -82,7 +80,7 @@ public class SocketManager {
                             recheckSocket++;
                     }
                     if (recheckSocket == 0) {
-                        recMsg1.call("Connected to" + " " +(socketCounter + 1));
+                        receiveMessage.call("Connected to" + " " +(socketCounter + 1));
                         bluetoothSockets[socketCounter] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
@@ -115,4 +113,9 @@ public class SocketManager {
             serverSockets[i].disconnect2();
         }
     }
+
+    public int getSocketCounter(){
+        return socketCounter;
+    }
+
 }
