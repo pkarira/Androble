@@ -25,7 +25,7 @@ public class SocketManger {
     int socketCounter = 0;
     public static BluetoothSocket bluetoothSockets[];
     public static BluetoothAdapter bluetoothAdapter;
-    ReceiveMsg recMsg1;
+    ReceiveMessage recMsg1;
     ServerSocket serverSockets[];
 
     public Context context;
@@ -35,7 +35,7 @@ public class SocketManger {
     }
 
     public void startConnection(BluetoothAdapter bluetoothAdapter1) {
-        recMsg1 = new ReceiveMsg();
+        recMsg1 = new ReceiveMessage();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
         bluetoothSockets = new BluetoothSocket[mUUIDStrings.length];
 

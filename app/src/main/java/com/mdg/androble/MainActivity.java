@@ -97,7 +97,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
         @Override
         public void update(Observable observable, Object data) {
             Log.e(TAG, "in received");
-           final String msg = ((ReceiveMsg)observable).getMessage();
+           final String msg = ((ReceiveMessage)observable).getMessage();
             runOnUiThread(new Runnable() {
                 public void run() {
                     Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();

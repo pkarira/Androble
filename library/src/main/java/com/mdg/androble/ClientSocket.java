@@ -19,10 +19,10 @@ public class ClientSocket {
     String check = null;
     private ServerSocket serverSocket;
     private BluetoothSocket finalBluetoothSocket = null;
-    private ReceiveMsg recMsg1;
+    private ReceiveMessage recMsg1;
 
     public void startConnection(BluetoothAdapter a, String s) {
-        recMsg1 = new ReceiveMsg();
+        recMsg1 = new ReceiveMessage();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
         bluetoothAdapter = a;
         mUuids = new ArrayList<>();

@@ -20,7 +20,7 @@ class ServerSocket extends Thread {
     public static String my_id = null;
     public static StringBuilder sb = new StringBuilder();
     private int playerid = 0;
-    ReceiveMsg recMsg;
+    ReceiveMessage recMsg;
 
     public ServerSocket(BluetoothSocket socket) {
         mmSocket = socket;
@@ -38,7 +38,7 @@ class ServerSocket extends Thread {
     }
 
     public void run() {
-        recMsg = new ReceiveMsg();
+        recMsg = new ReceiveMessage();
         recMsg.addObserver((Observer) BluetoothManager.recieve_msg);
         byte[] buffer = new byte[1024];
         int bytes1 = 0;
@@ -100,7 +100,7 @@ class ServerSocket extends Thread {
     }
 }
 
-/*class ReceiveMsg extends Observable {
+/*class ReceiveMessage extends Observable {
     String message = "";
 
     public void call(String s) {
