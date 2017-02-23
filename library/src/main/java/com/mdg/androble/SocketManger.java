@@ -3,6 +3,7 @@ package com.mdg.androble;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,28 +13,43 @@ import java.util.UUID;
 /**
  * Created by this pc on 02-08-2016.
  */
+
 public class SocketManger {
+
     public ArrayList<UUID> mUuids;
+    String[] mUUIDStrings;
+
     ListeningThread listeningThread;
     boolean check;
     int recheckSocket = 0;
     int socketCounter = 0;
-    public static BluetoothSocket blueSocket_array[];
+    public static BluetoothSocket bluetoothSockets[];
     public static BluetoothAdapter bluetoothAdapter;
     ReceiveMsg recMsg1;
-    ServerSocket arraysm[];
+    ServerSocket serverSockets[];
+
+    public Context context;
+
+    public SocketManger(Context context){
+        this.context = context;
+    }
 
     public void startConnection(BluetoothAdapter bluetoothAdapter1) {
         recMsg1 = new ReceiveMsg();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
-        blueSocket_array = new BluetoothSocket[4];
+        bluetoothSockets = new BluetoothSocket[mUUIDStrings.length];
+
+        /*
+            add uuid string array to list
+         */
         mUuids = new ArrayList<>();
-        mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
-        mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
-        mUuids.add(UUID.fromString("e442e09a-51f3-4a7b-91cb-f638491d1412"));
-        mUuids.add(UUID.fromString("a81d6504-4536-49ee-a475-7d96d09439e4"));
+        mUUIDStrings = context.getResources().getStringArray(R.array.uuid_strings);
+        for(int i=0;i<mUUIDStrings.length;i++){
+            mUuids.add(UUID.fromString(mUUIDStrings[i]));
+        }
+
         bluetoothAdapter = bluetoothAdapter1;
-        arraysm = new ServerSocket[4];
+        serverSockets = new ServerSocket[4];
         listeningThread = new ListeningThread();
         listeningThread.start();
     }
@@ -63,17 +79,17 @@ public class SocketManger {
                         break;
                     }
                     for (i = 0; i < socketCounter; i++) {
-                        if (bluetoothSocket.equals(blueSocket_array[i]))
+                        if (bluetoothSocket.equals(bluetoothSockets[i]))
                             recheckSocket++;
                     }
                     if (recheckSocket == 0) {
-                        recMsg1.call("Connected to" + " " + (socketCounter + 1));
-                        blueSocket_array[socketCounter] = bluetoothSocket;
+                        recMsg1.call("Connected to" + " " +(socketCounter + 1));
+                        bluetoothSockets[socketCounter] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
-                        ServerSocket sm = new ServerSocket(blueSocket_array[socketCounter]);
+                        ServerSocket sm = new ServerSocket(bluetoothSockets[socketCounter]);
                         sm.start();
-                        arraysm[socketCounter] = sm;
+                        serverSockets[socketCounter] = sm;
                         sm.write(("?" + (socketCounter + 1)).getBytes());
                         socketCounter++;
                     }
@@ -88,16 +104,16 @@ public class SocketManger {
     }
 
     public void write(String s, int n) {
-        arraysm[n - 1].write(s.getBytes());
+        serverSockets[n - 1].write(s.getBytes());
     }
 
-    public synchronized BluetoothSocket connected(BluetoothSocket socket) {
+    public synchronized BluetoothSocket connected(BluetoothSocket socket){
         return socket;
     }
 
     public void disconnectServer() {
         for (int i = 0; i < socketCounter; i++) {
-            arraysm[i].disconnect2();
+            serverSockets[i].disconnect2();
         }
     }
 }

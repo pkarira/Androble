@@ -1,5 +1,7 @@
 package com.mdg.androble;
 
+import android.content.Context;
+
 import java.io.IOException;
 
 /**
@@ -12,24 +14,24 @@ public class BluetoothManager {
     }
 
     public ConnectionType connectionType;
-    //BluetoothSocket socketForClient;
     public static SocketManger serverSocket;
     ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
-    private static BluetoothManager bManager = null;
+    private static BluetoothManager bluetoothManager;
+    private Context context;
 
-
-    private BluetoothManager() {
-        serverSocket = new SocketManger();
+    private BluetoothManager(Context context) {
+        serverSocket = new SocketManger(context);
         clientSocket = new ClientSocket();
+        this.context = context;
     }
 
-    public static BluetoothManager getInstance() {
-        if (bManager == null) {
-            bManager = new BluetoothManager();
+    public static BluetoothManager getInstance(Context context) {
+        if (bluetoothManager == null) {
+            bluetoothManager = new BluetoothManager(context);
         }
-        return bManager;
+        return bluetoothManager;
     }
 
     /**
@@ -48,13 +50,11 @@ public class BluetoothManager {
         this.connectionType = connectionType;
     }
 
-    public void setListObject(Object myObject)
-
-    {
+    public void setListObject(Object myObject){
         device_list = myObject;
     }
 
-    public void setMessageObject(Object myObject) {
+    public void setMessageObject(Object myObject){
         recieve_msg = myObject;
     }
 

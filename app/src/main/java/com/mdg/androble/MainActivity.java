@@ -32,7 +32,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bluetoothManager = BluetoothManager.getInstance();
+        bluetoothManager = BluetoothManager.getInstance(getApplicationContext());
         receiveMessage = new receiveMessage();
         deviceList = new DeviceList();
 
