@@ -1,103 +1,117 @@
 package com.mdg.androble;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Observer;
-import java.util.UUID;
 
 /**
  * Created by this pc on 02-08-2016.
  */
-public class ServerSocket {
-    public ArrayList<UUID> mUuids;
-    ListeningThread listeningThread;
-    boolean check;
-    int recheckSocket = 0;
-    int socketCounter = 0;
-    public static BluetoothSocket blueSocket_array[];
-    public static BluetoothAdapter bluetoothAdapter;
-    ReceiveMsg recMsg1;
-    SocketManager arraysm[];
 
-    public void startConnection(BluetoothAdapter bluetoothAdapter1) {
-        recMsg1 = new ReceiveMsg();
-        recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
-        blueSocket_array = new BluetoothSocket[4];
-        mUuids = new ArrayList<>();
-        mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
-        mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
-        mUuids.add(UUID.fromString("e442e09a-51f3-4a7b-91cb-f638491d1412"));
-        mUuids.add(UUID.fromString("a81d6504-4536-49ee-a475-7d96d09439e4"));
-        bluetoothAdapter = bluetoothAdapter1;
-        arraysm = new SocketManager[4];
-        listeningThread = new ListeningThread();
-        listeningThread.start();
+class ServerSocket extends Thread {
+    private final BluetoothSocket mmSocket;
+    private final InputStream mmInStream;
+    private final OutputStream mmOutStream;
+    private final BluetoothSocket mBluetoothSocket;
+
+    public static String my_id = null;
+    public static StringBuilder sb = new StringBuilder();
+    private int playerid = 0;
+    ReceiveMsg recMsg;
+
+    public ServerSocket(BluetoothSocket socket) {
+        mmSocket = socket;
+        mBluetoothSocket = socket;
+        InputStream tmpIn = null;
+        OutputStream tmpOut = null;
+        try {
+            tmpIn = socket.getInputStream();
+            tmpOut = socket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mmInStream = tmpIn;
+        mmOutStream = tmpOut;
     }
 
-    private class ListeningThread extends Thread {
-        BluetoothServerSocket bluetoothServerSocket;
-        BluetoothServerSocket temp = null;
-
-        public ListeningThread() {
-        }
-
-        public void run() {
-            BluetoothSocket bluetoothSocket = null;
-            for (int i = 0; i < mUuids.size(); i++) {
-                try {
-                    temp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("pulkit", mUuids.get(i));
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public void run() {
+        recMsg = new ReceiveMsg();
+        recMsg.addObserver((Observer) BluetoothManager.recieve_msg);
+        byte[] buffer = new byte[1024];
+        int bytes1 = 0;
+        int bytes2 = 0;
+        sb.append(SocketManger.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
+        // Keep listening to the InputStream while connected
+        while (true) {
+            try {
+                String readMessage;
+                bytes1 = mmInStream.read(buffer);
+                if (bytes1 != bytes2) {
+                    readMessage = new String(buffer, 0, bytes1);
+                    if (readMessage.contains("/")) {
+                        sb.append(readMessage.substring(1) + " " + "is" + " " + (playerid + 1) + "\n");
+                        playerid++;
+                        recMsg.call("Connected to " + readMessage.substring(1));
+                    } else if (readMessage.contains("?")) {
+                        my_id = readMessage.substring(1);
+                        recMsg.call("Your ID is " + readMessage.substring(1));
+                    } else if (readMessage.contains("<") && readMessage.contains(">")) {
+                        BluetoothManager.serverSocket.write(readMessage.substring(3), Integer.parseInt(String.valueOf(readMessage.charAt(1))));
+                    } else if (readMessage.contains("(") && readMessage.contains(")")) {
+                        BluetoothManager.serverSocket.write(sb.substring(0), Integer.parseInt(String.valueOf(readMessage.charAt(1))));
+                    } else
+                        recMsg.call(readMessage);
+                    bytes2 = bytes1;
                 }
-                check = true;
-                bluetoothServerSocket = temp;
-                recheckSocket = 0;
-                while (check) {
-                    try {
-                        bluetoothSocket = bluetoothServerSocket.accept();
-                    } catch (IOException e) {
-                        break;
-                    }
-                    for (i = 0; i < socketCounter; i++) {
-                        if (bluetoothSocket.equals(blueSocket_array[i]))
-                            recheckSocket++;
-                    }
-                    if (recheckSocket == 0) {
-                        recMsg1.call("Connected to" + " " + (socketCounter + 1));
-                        blueSocket_array[socketCounter] = bluetoothSocket;
-                        check = false;
-                        connected(bluetoothSocket);
-                        SocketManager sm = new SocketManager(blueSocket_array[socketCounter]);
-                        sm.start();
-                        arraysm[socketCounter] = sm;
-                        sm.write(("?" + (socketCounter + 1)).getBytes());
-                        socketCounter++;
-                    }
-                }
-                try {
-                    bluetoothServerSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
-    public void write(String s, int n) {
-        arraysm[n - 1].write(s.getBytes());
+    public void write(byte[] buffer) {
+        try {
+            mmOutStream.write(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public synchronized BluetoothSocket connected(BluetoothSocket socket) {
-        return socket;
+    public void cancel() {
+        try {
+            mmSocket.close();
+        } catch (IOException e) {
+
+        }
     }
 
-    public void disconnectServer() {
-        for (int i = 0; i < socketCounter; i++) {
-            arraysm[i].disconnect2();
+    public void disconnect2() {
+        if (mmInStream != null && mmOutStream != null) {
+            try {
+                mmInStream.close();
+                mmOutStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
+
+/*class ReceiveMsg extends Observable {
+    String message = "";
+
+    public void call(String s) {
+        this.message = s;
+        setChanged();
+        notifyObservers(s);
+    }
+
+    public synchronized String getMessage() {
+        return this.message;
+    }
+}*/
+
+

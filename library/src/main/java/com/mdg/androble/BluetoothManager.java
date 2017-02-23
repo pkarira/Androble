@@ -1,9 +1,6 @@
 package com.mdg.androble;
 
-import android.bluetooth.BluetoothSocket;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by this pc on 02-08-2016.
@@ -16,7 +13,7 @@ public class BluetoothManager {
 
     public ConnectionType connectionType;
     //BluetoothSocket socketForClient;
-    public static ServerSocket serverSocket;
+    public static SocketManger serverSocket;
     ClientSocket clientSocket;
     public static Object recieve_msg;
     public static Object device_list;
@@ -24,7 +21,7 @@ public class BluetoothManager {
 
 
     private BluetoothManager() {
-        serverSocket = new ServerSocket();
+        serverSocket = new SocketManger();
         clientSocket = new ClientSocket();
     }
 
@@ -71,12 +68,12 @@ public class BluetoothManager {
 
     public void sendText(String s) {
         if (clientSocket.check.equals(("connected")) && connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.write(SocketManager.my_id + ":" + s);
+            clientSocket.write(ServerSocket.my_id + ":" + s);
         }
     }
 
     public String getId() {
-        return SocketManager.my_id;
+        return ServerSocket.my_id;
     }
 
     public void sendText(String s1, int id) {
@@ -93,10 +90,10 @@ public class BluetoothManager {
 
     public String getAllConnectedDevices() {
         if (connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.write("(" + SocketManager.my_id + ")");
+            clientSocket.write("(" + ServerSocket.my_id + ")");
             return null;
         } else {
-            return SocketManager.sb.substring(0);
+            return ServerSocket.sb.substring(0);
         }
     }
 
