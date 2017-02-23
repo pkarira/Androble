@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.mdg.androble.listeners.ConnectionStatusListener;
 import com.mdg.androble.listeners.MessageReceiveListener;
+import com.mdg.androble.network.ClientSocketManager;
+import com.mdg.androble.network.ServerSocket;
+import com.mdg.androble.network.ServerSocketManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @author Pulkit Karira, Deepankar Agrawal
@@ -57,7 +59,6 @@ public class BluetoothManager {
     public void setType(ConnectionType connectionType) {
         this.connectionType = connectionType;
     }
-
 
     void scanClients() {
         serverSocketManager.startConnection(BluetoothActivity.bluetoothAdapter);

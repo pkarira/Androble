@@ -1,6 +1,8 @@
-package com.mdg.androble;
+package com.mdg.androble.network;
 
 import android.bluetooth.BluetoothSocket;
+
+import com.mdg.androble.BluetoothManager;
 
 import java.io.IOException;
 import java.io.InputStream;

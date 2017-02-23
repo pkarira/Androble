@@ -1,4 +1,4 @@
-package com.mdg.androble;
+package com.mdg.androble.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;

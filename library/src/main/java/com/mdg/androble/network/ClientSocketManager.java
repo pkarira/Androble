@@ -1,8 +1,11 @@
-package com.mdg.androble;
+package com.mdg.androble.network;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+
+import com.mdg.androble.BluetoothManager;
+import com.mdg.androble.ServerSocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,6 +106,6 @@ public class ClientSocketManager {
 
     public void disconnectClient() {
         if (serverSocket != null)
-            serverSocket.disconnect2();
+            serverSocket.disconnect();
     }
 }

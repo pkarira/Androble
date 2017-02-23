@@ -1,16 +1,17 @@
-package com.mdg.androble;
+package com.mdg.androble.network;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
+import com.mdg.androble.R;
 import com.mdg.androble.listeners.MessageReceiveListener;
 import com.mdg.androble.listeners.ConnectionStatusListener;
+import com.mdg.androble.network.ServerSocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observer;
 import java.util.UUID;
 
 /**

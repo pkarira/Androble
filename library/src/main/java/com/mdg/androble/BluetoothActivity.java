@@ -16,8 +16,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.mdg.androble.utils.BluetoothDeviceInfo;
+
 import java.util.ArrayList;
-import java.util.Observer;
 
 
 public abstract class BluetoothActivity extends AppCompatActivity {
