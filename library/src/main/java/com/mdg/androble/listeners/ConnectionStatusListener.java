@@ -4,7 +4,7 @@ package com.mdg.androble.listeners;
  * @author Deepankar Agrawal
  */
 
-public interface OnConnectionStatusListener {
+public interface ConnectionStatusListener {
 
     /**
      * called whenever a new user is connected

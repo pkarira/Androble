@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.util.Observer;
 
 /**
- * Created by this pc on 02-08-2016.
+ * @author Pulkit Karira
  */
 
 class ServerSocket extends Thread {
@@ -43,7 +43,7 @@ class ServerSocket extends Thread {
         byte[] buffer = new byte[1024];
         int bytes1 = 0;
         int bytes2 = 0;
-        sb.append(SocketManager.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
+        sb.append(ServerSocketManager.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
         // Keep listening to the InputStream while connected
         while (true) {
             try {
@@ -59,9 +59,11 @@ class ServerSocket extends Thread {
                         my_id = readMessage.substring(1);
                         recMsg.call("Your ID is " + readMessage.substring(1));
                     } else if (readMessage.contains("<") && readMessage.contains(">")) {
-                        BluetoothManager.serverSocket.write(readMessage.substring(3), Integer.parseInt(String.valueOf(readMessage.charAt(1))));
+                        BluetoothManager.serverSocketManager.write(readMessage.substring(3),
+                                Integer.parseInt(String.valueOf(readMessage.charAt(1))));
                     } else if (readMessage.contains("(") && readMessage.contains(")")) {
-                        BluetoothManager.serverSocket.write(sb.substring(0), Integer.parseInt(String.valueOf(readMessage.charAt(1))));
+                        BluetoothManager.serverSocketManager.write(sb.substring(0),
+                                Integer.parseInt(String.valueOf(readMessage.charAt(1))));
                     } else
                         recMsg.call(readMessage);
                     bytes2 = bytes1;
@@ -88,7 +90,7 @@ class ServerSocket extends Thread {
         }
     }
 
-    public void disconnect2() {
+    public void disconnect() {
         if (mmInStream != null && mmOutStream != null) {
             try {
                 mmInStream.close();
@@ -99,19 +101,5 @@ class ServerSocket extends Thread {
         }
     }
 }
-
-/*class ReceiveMessage extends Observable {
-    String message = "";
-
-    public void call(String s) {
-        this.message = s;
-        setChanged();
-        notifyObservers(s);
-    }
-
-    public synchronized String getMessage() {
-        return this.message;
-    }
-}*/
 
 

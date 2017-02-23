@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Created by this pc on 02-08-2016.
  */
-public class ClientSocket {
+public class ClientSocketManager {
 
     private ArrayList<UUID> mUuids;
     private BluetoothAdapter bluetoothAdapter;

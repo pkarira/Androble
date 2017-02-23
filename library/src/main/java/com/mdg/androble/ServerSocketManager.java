@@ -5,36 +5,43 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
+import com.mdg.androble.listeners.MessageReceiveListener;
+import com.mdg.androble.listeners.ConnectionStatusListener;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observer;
 import java.util.UUID;
 
 /**
- * Created by this pc on 02-08-2016.
+ * @author Pulkit Karira, Deepankar Agrawal
  */
 
-public class SocketManager {
+public class ServerSocketManager {
 
     private ArrayList<UUID> mUuids;
     private String[] mUUIDStrings;
     ListeningThread listeningThread;
-    private boolean check;
+
     private int recheckSocket = 0;
     private int socketCounter = 0;
     private static BluetoothSocket bluetoothSockets[];
     private BluetoothAdapter bluetoothAdapter;
-    private ReceiveMessage receiveMessage;
     private ServerSocket serverSockets[];
     private Context context;
 
-    public SocketManager(Context context){
+    private ConnectionStatusListener connectionStatusListener;
+    private MessageReceiveListener messageReceiveListener;
+
+    public ServerSocketManager(Context context, ConnectionStatusListener connectionStatusListener,
+                               MessageReceiveListener messageReceiveListener){
         this.context = context;
+        this.connectionStatusListener = connectionStatusListener;
+        this.messageReceiveListener = messageReceiveListener;
     }
 
     public void startConnection(BluetoothAdapter bluetoothAdapter) {
-        receiveMessage = new ReceiveMessage();
-        receiveMessage.addObserver((Observer) BluetoothManager.recieve_msg);
+
         bluetoothSockets = new BluetoothSocket[mUUIDStrings.length];
 
         /*  add uuid string array to list
@@ -59,7 +66,9 @@ public class SocketManager {
         }
 
         public void run() {
-            BluetoothSocket bluetoothSocket = null;
+            BluetoothSocket bluetoothSocket;
+            boolean check;
+
             for (int i = 0; i < mUuids.size(); i++) {
                 try {
                     temp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("pulkit", mUuids.get(i));
@@ -80,7 +89,9 @@ public class SocketManager {
                             recheckSocket++;
                     }
                     if (recheckSocket == 0) {
-                        receiveMessage.call("Connected to" + " " +(socketCounter + 1));
+                        //notify to main activity
+                        connectionStatusListener.onConnected(socketCounter);
+
                         bluetoothSockets[socketCounter] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
@@ -110,7 +121,10 @@ public class SocketManager {
 
     public void disconnectServer() {
         for (int i = 0; i < socketCounter; i++) {
-            serverSockets[i].disconnect2();
+            serverSockets[i].disconnect();
+
+            //notify to main activity
+            connectionStatusListener.onDisconnected(socketCounter);
         }
     }
 

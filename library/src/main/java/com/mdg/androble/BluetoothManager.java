@@ -2,6 +2,7 @@ package com.mdg.androble;
 
 import android.content.Context;
 
+import com.mdg.androble.listeners.ConnectionStatusListener;
 import com.mdg.androble.listeners.MessageReceiveListener;
 
 import java.io.IOException;
@@ -22,16 +23,17 @@ public class BluetoothManager {
     private ConnectionType connectionType;
 
     private static BluetoothManager bluetoothManager;
-    private ClientSocket clientSocket;
-    private SocketManager socketManager;
-    private ArrayList<MessageReceiveListener> messageReceiveListeners;
+    private ClientSocketManager clientSocketManager;
+    public static ServerSocketManager serverSocketManager;
+
+    private MessageReceiveListener messageReceiveListener;
+    private ConnectionStatusListener connectionStatusListener;
 
 
     private BluetoothManager(Context context) {
-        socketManager = new SocketManager(context);
-        clientSocket = new ClientSocket();
-
-        messageReceiveListeners = new ArrayList<>();
+        serverSocketManager = new ServerSocketManager(context,
+                connectionStatusListener, messageReceiveListener);
+        clientSocketManager = new ClientSocketManager();
     }
 
     public static BluetoothManager getInstance(Context context) {
@@ -58,16 +60,16 @@ public class BluetoothManager {
 
 
     void scanClients() {
-        socketManager.startConnection(BluetoothActivity.bluetoothAdapter);
+        serverSocketManager.startConnection(BluetoothActivity.bluetoothAdapter);
     }
 
     public void connectTo(String s) {
-        clientSocket.startConnection(BluetoothActivity.bluetoothAdapter, s);
+        clientSocketManager.startConnection(BluetoothActivity.bluetoothAdapter, s);
     }
 
     public void sendText(String s) {
-        if (clientSocket.check.equals(("connected")) && connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.write(ServerSocket.my_id + ":" + s);
+        if (clientSocketManager.check.equals(("connected")) && connectionType.equals(ConnectionType.CLIENT)) {
+            clientSocketManager.write(ServerSocket.my_id + ":" + s);
         }
     }
 
@@ -76,20 +78,20 @@ public class BluetoothManager {
     }
 
     public void sendText(String s1, int id) {
-        if (id <= (socketManager.getSocketCounter() + 1)) {
-            socketManager.write(s1, id);
+        if (id <= (serverSocketManager.getSocketCounter() + 1)) {
+            serverSocketManager.write(s1, id);
         }
     }
 
     public void clientToClient(String s1, int id) {
-        if (id <= (socketManager.getSocketCounter() + 1)) {
-            clientSocket.write("<" + id + ">" + s1);
+        if (id <= (serverSocketManager.getSocketCounter() + 1)) {
+            clientSocketManager.write("<" + id + ">" + s1);
         }
     }
 
     public String getAllConnectedDevices() {
         if (connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.write("(" + ServerSocket.my_id + ")");
+            clientSocketManager.write("(" + ServerSocket.my_id + ")");
             return null;
         } else {
             return ServerSocket.sb.substring(0);
@@ -98,21 +100,17 @@ public class BluetoothManager {
 
     public String disconnect() throws IOException {
         if (connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.disconnectClient();
+            clientSocketManager.disconnectClient();
             return "DISCONNECTED";
         } else if (connectionType.equals(ConnectionType.SERVER)) {
-            socketManager.disconnectServer();
+            serverSocketManager.disconnectServer();
             return "DISCONNECTED";
         }
         return null;
     }
 
     public void addOnMessageReceiveListener(MessageReceiveListener messageReceiveListener){
-        messageReceiveListeners.add(messageReceiveListener);
-    }
-
-    public void removeOnMessageReceiveListener(MessageReceiveListener messageReceiveListener){
-        messageReceiveListeners.remove(messageReceiveListener);
+        this.messageReceiveListener = messageReceiveListener;
     }
 
 }
