@@ -14,8 +14,8 @@ import java.util.UUID;
 
 public abstract class BTSocket {
 
-    protected BluetoothAdapter bluetoothAdapter;
-    protected ArrayList<UUID> uuids;
+    BluetoothAdapter bluetoothAdapter;
+    ArrayList<UUID> uuids;
 
     BTSocket(){
         bluetoothAdapter = BluetoothManager.getInstance().bluetoothAdapter;
@@ -25,5 +25,21 @@ public abstract class BTSocket {
     public abstract void disconnect();
 
     public abstract int getAllConnectedDevices();
+
+    /**
+     * called by IOThread to send message to bluetooth socket
+     *
+     * @param threadId id of the thread to write to
+     * @param message message data
+     */
+    abstract void getMessageFromThread(int threadId, String message);
+
+    /**
+     * converts the message into bytes array dumps to IOThread so
+     * that it could be send to server or client
+     *
+     * @param message message data
+     */
+    abstract void writeMessageToThread(int threadId, String message);
 
 }

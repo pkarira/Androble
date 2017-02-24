@@ -14,11 +14,9 @@ import java.io.IOException;
 
 public class BTServer extends BTSocket{
 
-    private ListeningThread listeningThread;
-
     private int socketCounter = 0;
     private static BluetoothSocket bluetoothSockets[];
-    private IOThread IOThreads[];
+    private IOThread ioThreads[];
 
     private ConnectionStatusListener connectionStatusListener;
     private MessageReceiveListener messageReceiveListener;
@@ -33,16 +31,15 @@ public class BTServer extends BTSocket{
 
     public void connect() {
         bluetoothSockets = new BluetoothSocket[uuids.size()];
-        IOThreads = new IOThread[uuids.size()];
+        ioThreads = new IOThread[uuids.size()];
 
-        listeningThread = new ListeningThread();
-        listeningThread.start();
+        new ListeningThread().start();
     }
 
     @Override
     public void disconnect() {
         for (int i = 0; i < socketCounter; i++) {
-            IOThreads[i].disconnect();
+            ioThreads[i].disconnect();
 
             //notify to main activity
             connectionStatusListener.onDisconnected(socketCounter);
@@ -55,25 +52,49 @@ public class BTServer extends BTSocket{
         return socketCounter;
     }
 
+    @Override
+    void getMessageFromThread(int threadId, String message) {
+        //decode the message
+        sb.append(bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
+        if (message.contains("/")) {
+            sb.append(message.substring(1) + " is " + (playerId + 1) + "\n");
+            playerId++;
+            recMsg.call("Connected to " + message.substring(1));
+        } else if (message.contains("?")) {
+            clientId = Integer.parseInt(message.substring(1));
+            recMsg.call("Your ID is " + message.substring(1));
+        } else if (message.contains("<") && message.contains(">")) {
+            btServer.write(message.substring(3),
+                    Integer.parseInt(String.valueOf(message.charAt(1))));
+        } else if (message.contains("(") && message.contains(")")) {
+            btServer.write(sb.substring(0),
+                    Integer.parseInt(String.valueOf(message.charAt(1))));
+        } else{
+            recMsg.call(message);
+        }
+    }
+
+    @Override
+    void writeMessageToThread(int threadId, String message) {
+        if (threadId <= (getSocketCounter() + 1)) {
+            ioThreads[threadId - 1].write(message.getBytes());
+        }
+    }
+
     public String getId() {
         return IOThread.myId;
     }
 
-    public void sendText(String s1, int id) {
-        if (id <= (getSocketCounter() + 1)) {
-            write(s1, id);
-        }
+    public void sendText(String s, int id) {
+        writeMessageToThread(id, s);
     }
 
-    public void write(String s, int n) {
-        IOThreads[n - 1].write(s.getBytes());
-    }
 
-    public synchronized BluetoothSocket connected(BluetoothSocket socket){
+    private synchronized BluetoothSocket connected(BluetoothSocket socket){
         return socket;
     }
 
-    public int getSocketCounter(){
+    private int getSocketCounter(){
         return socketCounter;
     }
 
@@ -111,9 +132,10 @@ public class BTServer extends BTSocket{
                         bluetoothSockets[socketCounter] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
-                        IOThread sm = new IOThread(bluetoothSockets[socketCounter], BTServer.this);
+                        IOThread sm = new IOThread(socketCounter, bluetoothSockets[socketCounter], 
+                                BTServer.this);
                         sm.start();
-                        IOThreads[socketCounter] = sm;
+                        ioThreads[socketCounter] = sm;
                         sm.write(("?" + (socketCounter + 1)).getBytes());
                         socketCounter++;
                     }
