@@ -27,7 +27,6 @@ public abstract class BluetoothActivity extends AppCompatActivity {
 
     protected BluetoothAdapter bluetoothAdapter;
     public ArrayList<BluetoothDeviceInfo> deviceArrayList;
-    public BluetoothManager bluetoothManager;
 
 
     protected void enableBluetooth() {

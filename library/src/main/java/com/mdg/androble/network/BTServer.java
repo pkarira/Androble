@@ -1,52 +1,58 @@
 package com.mdg.androble.network;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 
 import com.mdg.androble.listeners.ConnectionStatusListener;
 import com.mdg.androble.listeners.MessageReceiveListener;
-import com.mdg.androble.utils.UuidGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * @author Pulkit Karira, Deepankar Agrawal
  */
 
-public class ServerSocketManager {
+public class BTServer extends BTSocket{
 
-    private ArrayList<UUID> mUuids;
     private ListeningThread listeningThread;
 
     private int socketCounter = 0;
     private static BluetoothSocket bluetoothSockets[];
-    private BluetoothAdapter bluetoothAdapter;
     private ServerSocket serverSockets[];
 
     private ConnectionStatusListener connectionStatusListener;
     private MessageReceiveListener messageReceiveListener;
 
-    public ServerSocketManager(ConnectionStatusListener connectionStatusListener,
-                               MessageReceiveListener messageReceiveListener){
+    public BTServer(ConnectionStatusListener connectionStatusListener,
+                    MessageReceiveListener messageReceiveListener){
+        super();
 
         this.connectionStatusListener = connectionStatusListener;
         this.messageReceiveListener = messageReceiveListener;
-
-        mUuids = UuidGenerator.generateUUIDs();
     }
 
-    public void startConnection(BluetoothAdapter bluetoothAdapter) {
-        this.bluetoothAdapter = bluetoothAdapter;
-
-        bluetoothSockets = new BluetoothSocket[mUuids.size()];
-        serverSockets = new ServerSocket[mUuids.size()];
+    public void connect() {
+        bluetoothSockets = new BluetoothSocket[uuids.size()];
+        serverSockets = new ServerSocket[uuids.size()];
 
         listeningThread = new ListeningThread();
         listeningThread.start();
+    }
+
+    @Override
+    public void disconnect() {
+        for (int i = 0; i < socketCounter; i++) {
+            serverSockets[i].disconnect();
+
+            //notify to main activity
+            connectionStatusListener.onDisconnected(socketCounter);
+        }
+    }
+
+    @Override
+    public int getAllConnectedDevices() {
+
+        return socketCounter;
     }
 
     private class ListeningThread extends Thread {
@@ -58,9 +64,9 @@ public class ServerSocketManager {
             boolean check = true;
             int recheckSocket = 0;
 
-            for (int i = 0; i < mUuids.size(); i++) {
+            for (int i = 0; i < uuids.size(); i++) {
                 try {
-                    temp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("pulkit", mUuids.get(i));
+                    temp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("pulkit", uuids.get(i));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -105,15 +111,6 @@ public class ServerSocketManager {
 
     public synchronized BluetoothSocket connected(BluetoothSocket socket){
         return socket;
-    }
-
-    public void disconnectServer() {
-        for (int i = 0; i < socketCounter; i++) {
-            serverSockets[i].disconnect();
-
-            //notify to main activity
-            connectionStatusListener.onDisconnected(socketCounter);
-        }
     }
 
     public int getSocketCounter(){

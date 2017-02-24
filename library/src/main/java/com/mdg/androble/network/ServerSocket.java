@@ -14,13 +14,14 @@ import java.util.Observer;
  * @author Pulkit Karira
  */
 
-class ServerSocket extends Thread {
+public class ServerSocket extends Thread {
+
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
     private final BluetoothSocket mBluetoothSocket;
 
-    public static String my_id = null;
+    public static String myId = null;
     public static StringBuilder sb = new StringBuilder();
     private int playerid = 0;
     ReceiveMessage recMsg;
@@ -46,7 +47,7 @@ class ServerSocket extends Thread {
         byte[] buffer = new byte[1024];
         int bytes1 = 0;
         int bytes2 = 0;
-        sb.append(BluetoothActivity.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
+        sb.append(BluetoothManager.getInstance().bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
         // Keep listening to the InputStream while connected
         while (true) {
             try {
@@ -59,7 +60,7 @@ class ServerSocket extends Thread {
                         playerid++;
                         recMsg.call("Connected to " + readMessage.substring(1));
                     } else if (readMessage.contains("?")) {
-                        my_id = readMessage.substring(1);
+                        myId = readMessage.substring(1);
                         recMsg.call("Your ID is " + readMessage.substring(1));
                     } else if (readMessage.contains("<") && readMessage.contains(">")) {
                         BluetoothManager.serverSocketManager.write(readMessage.substring(3),

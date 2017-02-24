@@ -1,14 +1,11 @@
 package com.mdg.androble.network;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 import com.mdg.androble.BluetoothManager;
-import com.mdg.androble.utils.UuidGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Observer;
 import java.util.UUID;
 
@@ -16,21 +13,24 @@ import java.util.UUID;
  * @author Pulkit Karira
  */
 
-public class ClientSocketManager {
+public class BTClient extends BTSocket{
 
-    private BluetoothAdapter bluetoothAdapter;
     private ConnectingThread connectingThread;
     private String check = null;
     private ServerSocket serverSocket;
     private BluetoothSocket finalBluetoothSocket = null;
     private ReceiveMessage recMsg1;
 
-    public void startConnection(BluetoothAdapter a, String s) {
+
+    public BTClient(){
+        super();
+    }
+
+    public void connect(String id) {
         recMsg1 = new ReceiveMessage();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
-        bluetoothAdapter = a;
-        ArrayList<UUID> uuids = UuidGenerator.generateUUIDs();
-        String MAC = s.substring(s.length() - 17);
+
+        String MAC = id.substring(id.length() - 17);
         BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(MAC);
         for (int i = 0; i < uuids.size(); i++) {
             try {
@@ -40,6 +40,17 @@ public class ClientSocketManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void disconnect() {
+        if (serverSocket != null)
+            serverSocket.disconnect();
+    }
+
+    @Override
+    public int getAllConnectedDevices() {
+        return 0;
     }
 
     private class ConnectingThread extends Thread {
@@ -98,10 +109,5 @@ public class ClientSocketManager {
         if (finalBluetoothSocket != null) {
             serverSocket.write(s.getBytes());
         }
-    }
-
-    public void disconnectClient() {
-        if (serverSocket != null)
-            serverSocket.disconnect();
     }
 }

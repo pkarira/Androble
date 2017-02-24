@@ -1,7 +1,6 @@
 package com.mdg.androble;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,16 +12,14 @@ import com.mdg.androble.listeners.MessageReceiveListener;
 import com.mdg.androble.testlibrary.R;
 
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 
 public class MainActivity extends BluetoothActivity implements MessageReceiveListener {
 
-    private receiveMessage receiveMessage;
     private BluetoothManager.ConnectionType type;
     private ListView listView;
     private EditText et1, et2;
-    private ArrayAdapter arrayAdapter;
+
+    public BluetoothManager bluetoothManager;
     
     private final static String TAG = "MainActivity";
 
@@ -30,8 +27,6 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        receiveMessage = new receiveMessage();
 
         listView = (ListView) findViewById(R.id.listView);
         et1=(EditText)findViewById(R.id.editText);
@@ -43,7 +38,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
                 bluetoothManager.connectTo(itemValue);
             }
         });
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
         listView.setAdapter(arrayAdapter);
     }
 
@@ -72,8 +67,8 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     }
 
     public void start(View v){
-        bluetoothManager.init(type, this);
         enableBluetooth();
+        bluetoothManager = BluetoothManager.createInstance(type);
     }
 
     public void send(View v) {
@@ -90,17 +85,17 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
 
     }
 
-    private class receiveMessage implements Observer {
-        @Override
-        public void update(Observable observable, Object data) {
-            Log.e(TAG, "in received");
-           final String msg = ((ReceiveMessage)observable).getMessage();
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
+//    private class receiveMessage implements Observer {
+//        @Override
+//        public void update(Observable observable, Object data) {
+//            Log.e(TAG, "in received");
+//           final String msg = ((ReceiveMessage)observable).getMessage();
+//            runOnUiThread(new Runnable() {
+//                public void run() {
+//                    Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();
+//                }
+//            });
+//        }
+//    }
 
 }
