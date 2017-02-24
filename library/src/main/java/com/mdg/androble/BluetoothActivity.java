@@ -1,7 +1,7 @@
 package com.mdg.androble;
 
 /**
- * Created by this pc on 02-08-2016.
+ * @author this pc on 02-08-2016.
  */
 
 import android.app.Activity;
@@ -48,18 +48,22 @@ public abstract class BluetoothActivity extends AppCompatActivity {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
                 bluetoothManager.scanClients();
-                Toast.makeText(getApplicationContext(), R.string.bluetooth_disable, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.bluetooth_disable,
+                        Toast.LENGTH_SHORT).show();
                 makeDiscoverable();
                 discoverDevices();
 
-            } else {
-                Toast.makeText(getApplicationContext(),R.string.bluetooth_disable, Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(getApplicationContext(), R.string.bluetooth_disable,
+                        Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == DISCOVERABLE_BT_REQUEST_CODE) {
             if (resultCode == DISCOVERABLE_DURATION) {
-                Toast.makeText(getApplicationContext(), R.string.discoverable_enable, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.discoverable_disable, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.discoverable_enable,
+                        Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(getApplicationContext(), R.string.discoverable_disable,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -97,7 +101,8 @@ public abstract class BluetoothActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                deviceArrayList.add(new BluetoothDeviceInfo(bluetoothDevice.getName(), bluetoothDevice.getAddress()));
+                deviceArrayList.add(new BluetoothDeviceInfo(bluetoothDevice.getName(),
+                        bluetoothDevice.getAddress()));
             }
         }
     };

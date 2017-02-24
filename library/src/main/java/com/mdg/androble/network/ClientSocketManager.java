@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 import com.mdg.androble.BluetoothManager;
-import com.mdg.androble.ServerSocket;
+import com.mdg.androble.utils.UuidGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,14 +13,14 @@ import java.util.Observer;
 import java.util.UUID;
 
 /**
- * Created by this pc on 02-08-2016.
+ * @author Pulkit Karira
  */
+
 public class ClientSocketManager {
 
-    private ArrayList<UUID> mUuids;
     private BluetoothAdapter bluetoothAdapter;
     private ConnectingThread connectingThread;
-    String check = null;
+    private String check = null;
     private ServerSocket serverSocket;
     private BluetoothSocket finalBluetoothSocket = null;
     private ReceiveMessage recMsg1;
@@ -29,16 +29,12 @@ public class ClientSocketManager {
         recMsg1 = new ReceiveMessage();
         recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
         bluetoothAdapter = a;
-        mUuids = new ArrayList<>();
-        mUuids.add(UUID.fromString("b7746a40-c758-4868-aa19-7ac6b3475dfc"));
-        mUuids.add(UUID.fromString("2d64189d-5a2c-4511-a074-77f199fd0834"));
-        mUuids.add(UUID.fromString("e442e09a-51f3-4a7b-91cb-f638491d1412"));
-        mUuids.add(UUID.fromString("a81d6504-4536-49ee-a475-7d96d09439e4"));
+        ArrayList<UUID> uuids = UuidGenerator.generateUUIDs();
         String MAC = s.substring(s.length() - 17);
         BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(MAC);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < uuids.size(); i++) {
             try {
-                connectingThread = new ConnectingThread(bluetoothDevice, mUuids.get(i));
+                connectingThread = new ConnectingThread(bluetoothDevice, uuids.get(i));
                 connectingThread.start();
             } catch (Exception e) {
                 e.printStackTrace();

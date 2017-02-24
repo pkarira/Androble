@@ -5,10 +5,9 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
-import com.mdg.androble.R;
-import com.mdg.androble.listeners.MessageReceiveListener;
 import com.mdg.androble.listeners.ConnectionStatusListener;
-import com.mdg.androble.network.ServerSocket;
+import com.mdg.androble.listeners.MessageReceiveListener;
+import com.mdg.androble.utils.UuidGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,39 +20,30 @@ import java.util.UUID;
 public class ServerSocketManager {
 
     private ArrayList<UUID> mUuids;
-    private String[] mUUIDStrings;
-    ListeningThread listeningThread;
+    private ListeningThread listeningThread;
 
-    private int recheckSocket = 0;
     private int socketCounter = 0;
     private static BluetoothSocket bluetoothSockets[];
     private BluetoothAdapter bluetoothAdapter;
     private ServerSocket serverSockets[];
-    private Context context;
 
     private ConnectionStatusListener connectionStatusListener;
     private MessageReceiveListener messageReceiveListener;
 
-    public ServerSocketManager(Context context, ConnectionStatusListener connectionStatusListener,
+    public ServerSocketManager(ConnectionStatusListener connectionStatusListener,
                                MessageReceiveListener messageReceiveListener){
-        this.context = context;
+
         this.connectionStatusListener = connectionStatusListener;
         this.messageReceiveListener = messageReceiveListener;
+
+        mUuids = UuidGenerator.generateUUIDs();
     }
 
     public void startConnection(BluetoothAdapter bluetoothAdapter) {
-
-        bluetoothSockets = new BluetoothSocket[mUUIDStrings.length];
-
-        /*  add uuid string array to list
-         */
-        mUuids = new ArrayList<>();
-        mUUIDStrings = context.getResources().getStringArray(R.array.uuid_strings);
-        for(int i=0;i<mUUIDStrings.length;i++){
-            mUuids.add(UUID.fromString(mUUIDStrings[i]));
-        }
         this.bluetoothAdapter = bluetoothAdapter;
-        serverSockets = new ServerSocket[mUUIDStrings.length];
+
+        bluetoothSockets = new BluetoothSocket[mUuids.size()];
+        serverSockets = new ServerSocket[mUuids.size()];
 
         listeningThread = new ListeningThread();
         listeningThread.start();
@@ -63,12 +53,10 @@ public class ServerSocketManager {
         BluetoothServerSocket bluetoothServerSocket;
         BluetoothServerSocket temp = null;
 
-        public ListeningThread() {
-        }
-
         public void run() {
             BluetoothSocket bluetoothSocket;
-            boolean check;
+            boolean check = true;
+            int recheckSocket = 0;
 
             for (int i = 0; i < mUuids.size(); i++) {
                 try {
@@ -76,9 +64,8 @@ public class ServerSocketManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                check = true;
                 bluetoothServerSocket = temp;
-                recheckSocket = 0;
+
                 while (check) {
                     try {
                         bluetoothSocket = bluetoothServerSocket.accept();

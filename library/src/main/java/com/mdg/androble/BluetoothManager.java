@@ -33,8 +33,8 @@ public class BluetoothManager {
 
 
     private BluetoothManager(Context context) {
-        serverSocketManager = new ServerSocketManager(context,
-                connectionStatusListener, messageReceiveListener);
+        serverSocketManager = new ServerSocketManager(connectionStatusListener,
+                messageReceiveListener);
         clientSocketManager = new ClientSocketManager();
     }
 

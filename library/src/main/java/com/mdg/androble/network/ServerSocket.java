@@ -2,6 +2,7 @@ package com.mdg.androble.network;
 
 import android.bluetooth.BluetoothSocket;
 
+import com.mdg.androble.BluetoothActivity;
 import com.mdg.androble.BluetoothManager;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ class ServerSocket extends Thread {
         byte[] buffer = new byte[1024];
         int bytes1 = 0;
         int bytes2 = 0;
-        sb.append(ServerSocketManager.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
+        sb.append(BluetoothActivity.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
         // Keep listening to the InputStream while connected
         while (true) {
             try {

@@ -4,19 +4,28 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by shubham7stark on 24/2/17.
+ * @author shubham7stark on 24/2/17.
  */
 
 public class BluetoothDeviceInfo implements Parcelable {
-    String name;
-    String address;
 
-    protected BluetoothDeviceInfo(String name, String address) {
+    private String name;
+    private String address;
+
+    public BluetoothDeviceInfo(String name, String address) {
         this.name = name;
         this.address = address;
     }
 
-    protected BluetoothDeviceInfo(Parcel in) {
+    public String getName(){
+        return this.name;
+    }
+
+    public String getAddress(){
+        return this.address;
+    }
+
+    private BluetoothDeviceInfo(Parcel in) {
         name = in.readString();
         address = in.readString();
     }
