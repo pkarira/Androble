@@ -12,7 +12,7 @@ import com.mdg.androble.network.BTSocket;
 /**
  * @author Pulkit Karira, Deepankar Agrawal
  *
- * This class act as main manager.
+ * This class act as main manager for server and client sockets.
  */
 
 public class BluetoothManager {
@@ -89,6 +89,18 @@ public class BluetoothManager {
         startConnection();
 
         return bluetoothManager.returnSocket();
+    }
+
+    public BTClient getBTClient() {
+        return btClient;
+    }
+
+    public BTServer getBTServer() {
+        return btServer;
+    }
+
+    public ConnectionType getConnectionType() {
+        return connectionType;
     }
 
     /**

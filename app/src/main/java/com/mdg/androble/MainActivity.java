@@ -63,7 +63,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     }
 
     public void clientToClient(View v)  {
-        bluetoothManager.clientToClient(et1.getText().toString(), Integer.parseInt(et2.getText().toString()));
+        btClient.clientToClient(et1.getText().toString(), Integer.parseInt(et2.getText().toString()));
     }
 
     public void devicelist(View v) {

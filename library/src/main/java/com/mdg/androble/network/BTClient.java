@@ -3,10 +3,7 @@ package com.mdg.androble.network;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-import com.mdg.androble.BluetoothManager;
-
 import java.io.IOException;
-import java.util.Observer;
 import java.util.UUID;
 
 /**
@@ -15,26 +12,26 @@ import java.util.UUID;
 
 public class BTClient extends BTSocket{
 
-    private ConnectingThread connectingThread;
     private String check = null;
-    private ServerSocket serverSocket;
+    private IOThread IOThread;
     private BluetoothSocket finalBluetoothSocket = null;
-    private ReceiveMessage recMsg1;
 
 
     public BTClient(){
         super();
     }
 
+    /**
+     *
+     * @param id id of the device which you want to connect
+     */
     public void connect(String id) {
-        recMsg1 = new ReceiveMessage();
-        recMsg1.addObserver((Observer) BluetoothManager.recieve_msg);
-
         String MAC = id.substring(id.length() - 17);
         BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(MAC);
         for (int i = 0; i < uuids.size(); i++) {
             try {
-                connectingThread = new ConnectingThread(bluetoothDevice, uuids.get(i));
+                ConnectingThread connectingThread = new ConnectingThread(bluetoothDevice,
+                        uuids.get(i));
                 connectingThread.start();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -44,33 +41,25 @@ public class BTClient extends BTSocket{
 
     @Override
     public void disconnect() {
-        if (serverSocket != null)
-            serverSocket.disconnect();
+        if (IOThread != null)
+            IOThread.disconnect();
     }
 
     @Override
     public int getAllConnectedDevices() {
-        write("(" + ServerSocket.myId + ")");
+        write("(" + IOThread.myId + ")");
         return 0;
     }
 
     public void sendText(String s) {
         if (check.equals(("connected"))) {
-            write(ServerSocket.myId + ":" + s);
+            write(IOThread.myId + ":" + s);
         }
-    }
-
-    private void connected(BluetoothSocket bluetoothSocket) {
-        recMsg1.call("connected");
-        serverSocket = new ServerSocket(bluetoothSocket);
-        serverSocket.start();
-        serverSocket.write(("/" + bluetoothAdapter.getName()).getBytes());
-        finalBluetoothSocket = bluetoothSocket;
     }
 
     public void write(String s) {
         if (finalBluetoothSocket != null) {
-            serverSocket.write(s.getBytes());
+            IOThread.write(s.getBytes());
         }
     }
 
@@ -78,11 +67,19 @@ public class BTClient extends BTSocket{
      * current implementation will not work, becauz at a time we will have only
      * one type of connection type, server or client
      */
-//    public void clientToClient(String s1, int id) {
+    public void clientToClient(String s1, int id) {
 //        if (id <= (btServer.getSocketCounter() + 1)) {
 //            write("<" + id + ">" + s1);
 //        }
-//    }
+    }
+
+    private void connected(BluetoothSocket bluetoothSocket) {
+        recMsg1.call("connected");
+        IOThread = new IOThread(bluetoothSocket);
+        IOThread.start();
+        IOThread.write(("/" + bluetoothAdapter.getName()).getBytes());
+        finalBluetoothSocket = bluetoothSocket;
+    }
 
     private class ConnectingThread extends Thread {
         private final BluetoothDevice bluetoothDevice;
@@ -96,10 +93,12 @@ public class BTClient extends BTSocket{
                 temp = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
             } catch (IOException e) {
                 e.printStackTrace();
+                cancel();
             }
             bluetoothSocket = temp;
         }
 
+        @Override
         public void run() {
             bluetoothAdapter.cancelDiscovery();
 
@@ -107,11 +106,7 @@ public class BTClient extends BTSocket{
                 bluetoothSocket.connect();
             } catch (IOException connectException) {
                 connectException.printStackTrace();
-                try {
-                    bluetoothSocket.close();
-                } catch (IOException closeException) {
-                    closeException.printStackTrace();
-                }
+                cancel();
             }
             if (bluetoothDevice != null) {
                 check = "connected";
@@ -119,7 +114,7 @@ public class BTClient extends BTSocket{
             }
         }
 
-        public void cancel() {
+        void cancel() {
             try {
                 bluetoothSocket.close();
             } catch (IOException e) {

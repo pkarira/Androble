@@ -2,33 +2,29 @@ package com.mdg.androble.network;
 
 import android.bluetooth.BluetoothSocket;
 
-import com.mdg.androble.BluetoothActivity;
-import com.mdg.androble.BluetoothManager;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Observer;
 
 /**
  * @author Pulkit Karira
  */
 
-public class ServerSocket extends Thread {
+class IOThread extends Thread {
 
-    private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
     private final BluetoothSocket mBluetoothSocket;
 
     public static String myId = null;
     public static StringBuilder sb = new StringBuilder();
-    private int playerid = 0;
-    ReceiveMessage recMsg;
+    private int playerId = 0;
 
-    public ServerSocket(BluetoothSocket socket) {
-        mmSocket = socket;
+    private BTServer btServer;
+
+    public IOThread(BluetoothSocket socket, BTServer btServer) {
         mBluetoothSocket = socket;
+        this.btServer = btServer;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
         try {
@@ -42,12 +38,11 @@ public class ServerSocket extends Thread {
     }
 
     public void run() {
-        recMsg = new ReceiveMessage();
-        recMsg.addObserver((Observer) BluetoothManager.recieve_msg);
+
         byte[] buffer = new byte[1024];
-        int bytes1 = 0;
+        int bytes1;
         int bytes2 = 0;
-        sb.append(BluetoothManager.getInstance().bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
+        sb.append(btServer.bluetoothAdapter.getName() + " " + "is" + " " + "SERVER" + "\n");
         // Keep listening to the InputStream while connected
         while (true) {
             try {
@@ -56,17 +51,17 @@ public class ServerSocket extends Thread {
                 if (bytes1 != bytes2) {
                     readMessage = new String(buffer, 0, bytes1);
                     if (readMessage.contains("/")) {
-                        sb.append(readMessage.substring(1) + " " + "is" + " " + (playerid + 1) + "\n");
-                        playerid++;
+                        sb.append(readMessage.substring(1) + " is " + (playerId + 1) + "\n");
+                        playerId++;
                         recMsg.call("Connected to " + readMessage.substring(1));
                     } else if (readMessage.contains("?")) {
                         myId = readMessage.substring(1);
                         recMsg.call("Your ID is " + readMessage.substring(1));
                     } else if (readMessage.contains("<") && readMessage.contains(">")) {
-                        BluetoothManager.serverSocketManager.write(readMessage.substring(3),
+                        btServer.write(readMessage.substring(3),
                                 Integer.parseInt(String.valueOf(readMessage.charAt(1))));
                     } else if (readMessage.contains("(") && readMessage.contains(")")) {
-                        BluetoothManager.serverSocketManager.write(sb.substring(0),
+                        btServer.write(sb.substring(0),
                                 Integer.parseInt(String.valueOf(readMessage.charAt(1))));
                     } else
                         recMsg.call(readMessage);
@@ -88,9 +83,9 @@ public class ServerSocket extends Thread {
 
     public void cancel() {
         try {
-            mmSocket.close();
+            mBluetoothSocket.close();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -104,6 +99,7 @@ public class ServerSocket extends Thread {
             }
         }
     }
+
 }
 
 

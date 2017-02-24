@@ -18,7 +18,7 @@ public class BTServer extends BTSocket{
 
     private int socketCounter = 0;
     private static BluetoothSocket bluetoothSockets[];
-    private ServerSocket serverSockets[];
+    private IOThread IOThreads[];
 
     private ConnectionStatusListener connectionStatusListener;
     private MessageReceiveListener messageReceiveListener;
@@ -33,7 +33,7 @@ public class BTServer extends BTSocket{
 
     public void connect() {
         bluetoothSockets = new BluetoothSocket[uuids.size()];
-        serverSockets = new ServerSocket[uuids.size()];
+        IOThreads = new IOThread[uuids.size()];
 
         listeningThread = new ListeningThread();
         listeningThread.start();
@@ -42,7 +42,7 @@ public class BTServer extends BTSocket{
     @Override
     public void disconnect() {
         for (int i = 0; i < socketCounter; i++) {
-            serverSockets[i].disconnect();
+            IOThreads[i].disconnect();
 
             //notify to main activity
             connectionStatusListener.onDisconnected(socketCounter);
@@ -51,12 +51,12 @@ public class BTServer extends BTSocket{
 
     @Override
     public int getAllConnectedDevices() {
-        String s = ServerSocket.sb.substring(0);
+        String s = IOThread.sb.substring(0);
         return socketCounter;
     }
 
     public String getId() {
-        return ServerSocket.myId;
+        return IOThread.myId;
     }
 
     public void sendText(String s1, int id) {
@@ -66,7 +66,7 @@ public class BTServer extends BTSocket{
     }
 
     public void write(String s, int n) {
-        serverSockets[n - 1].write(s.getBytes());
+        IOThreads[n - 1].write(s.getBytes());
     }
 
     public synchronized BluetoothSocket connected(BluetoothSocket socket){
@@ -111,9 +111,9 @@ public class BTServer extends BTSocket{
                         bluetoothSockets[socketCounter] = bluetoothSocket;
                         check = false;
                         connected(bluetoothSocket);
-                        ServerSocket sm = new ServerSocket(bluetoothSockets[socketCounter]);
+                        IOThread sm = new IOThread(bluetoothSockets[socketCounter], BTServer.this);
                         sm.start();
-                        serverSockets[socketCounter] = sm;
+                        IOThreads[socketCounter] = sm;
                         sm.write(("?" + (socketCounter + 1)).getBytes());
                         socketCounter++;
                     }
