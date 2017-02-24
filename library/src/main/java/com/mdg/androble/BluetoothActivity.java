@@ -1,7 +1,7 @@
 package com.mdg.androble;
 
 /**
- * @author this pc on 02-08-2016.
+ * @author Pulkit Karira
  */
 
 import android.app.Activity;
@@ -11,8 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -27,14 +25,10 @@ public abstract class BluetoothActivity extends AppCompatActivity {
     private static final int DISCOVERABLE_BT_REQUEST_CODE = 2;
     private static final int DISCOVERABLE_DURATION = 300;
 
-    static BluetoothAdapter bluetoothAdapter;
+    protected BluetoothAdapter bluetoothAdapter;
     public ArrayList<BluetoothDeviceInfo> deviceArrayList;
     public BluetoothManager bluetoothManager;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     protected void enableBluetooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -47,11 +41,11 @@ public abstract class BluetoothActivity extends AppCompatActivity {
         if (requestCode == ENABLE_BT_REQUEST_CODE) {
             // Bluetooth successfully enabled!
             if (resultCode == Activity.RESULT_OK) {
-                bluetoothManager.scanClients();
-                Toast.makeText(getApplicationContext(), R.string.bluetooth_disable,
-                        Toast.LENGTH_SHORT).show();
                 makeDiscoverable();
                 discoverDevices();
+
+                Toast.makeText(getApplicationContext(), R.string.bluetooth_enable,
+                        Toast.LENGTH_SHORT).show();
 
             }else {
                 Toast.makeText(getApplicationContext(), R.string.bluetooth_disable,
