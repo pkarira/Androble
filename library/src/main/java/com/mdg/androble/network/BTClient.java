@@ -50,8 +50,39 @@ public class BTClient extends BTSocket{
 
     @Override
     public int getAllConnectedDevices() {
+        write("(" + ServerSocket.myId + ")");
         return 0;
     }
+
+    public void sendText(String s) {
+        if (check.equals(("connected"))) {
+            write(ServerSocket.myId + ":" + s);
+        }
+    }
+
+    private void connected(BluetoothSocket bluetoothSocket) {
+        recMsg1.call("connected");
+        serverSocket = new ServerSocket(bluetoothSocket);
+        serverSocket.start();
+        serverSocket.write(("/" + bluetoothAdapter.getName()).getBytes());
+        finalBluetoothSocket = bluetoothSocket;
+    }
+
+    public void write(String s) {
+        if (finalBluetoothSocket != null) {
+            serverSocket.write(s.getBytes());
+        }
+    }
+
+    /**
+     * current implementation will not work, becauz at a time we will have only
+     * one type of connection type, server or client
+     */
+//    public void clientToClient(String s1, int id) {
+//        if (id <= (btServer.getSocketCounter() + 1)) {
+//            write("<" + id + ">" + s1);
+//        }
+//    }
 
     private class ConnectingThread extends Thread {
         private final BluetoothDevice bluetoothDevice;
@@ -94,20 +125,6 @@ public class BTClient extends BTSocket{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void connected(BluetoothSocket bluetoothSocket) {
-        recMsg1.call("connected");
-        serverSocket = new ServerSocket(bluetoothSocket);
-        serverSocket.start();
-        serverSocket.write(("/" + bluetoothAdapter.getName()).getBytes());
-        finalBluetoothSocket = bluetoothSocket;
-    }
-
-    public void write(String s) {
-        if (finalBluetoothSocket != null) {
-            serverSocket.write(s.getBytes());
         }
     }
 }

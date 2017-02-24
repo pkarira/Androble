@@ -51,7 +51,29 @@ public class BTServer extends BTSocket{
 
     @Override
     public int getAllConnectedDevices() {
+        String s = ServerSocket.sb.substring(0);
+        return socketCounter;
+    }
 
+    public String getId() {
+        return ServerSocket.myId;
+    }
+
+    public void sendText(String s1, int id) {
+        if (id <= (getSocketCounter() + 1)) {
+            write(s1, id);
+        }
+    }
+
+    public void write(String s, int n) {
+        serverSockets[n - 1].write(s.getBytes());
+    }
+
+    public synchronized BluetoothSocket connected(BluetoothSocket socket){
+        return socket;
+    }
+
+    public int getSocketCounter(){
         return socketCounter;
     }
 
@@ -103,18 +125,6 @@ public class BTServer extends BTSocket{
                 }
             }
         }
-    }
-
-    public void write(String s, int n) {
-        serverSockets[n - 1].write(s.getBytes());
-    }
-
-    public synchronized BluetoothSocket connected(BluetoothSocket socket){
-        return socket;
-    }
-
-    public int getSocketCounter(){
-        return socketCounter;
     }
 
 }

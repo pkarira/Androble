@@ -9,9 +9,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mdg.androble.listeners.MessageReceiveListener;
+import com.mdg.androble.network.BTClient;
+import com.mdg.androble.network.BTServer;
 import com.mdg.androble.testlibrary.R;
-
-import java.io.IOException;
 
 public class MainActivity extends BluetoothActivity implements MessageReceiveListener {
 
@@ -20,6 +20,8 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     private EditText et1, et2;
 
     public BluetoothManager bluetoothManager;
+    public BTServer btServer;
+    public BTClient btClient;
     
     private final static String TAG = "MainActivity";
 
@@ -35,7 +37,7 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String itemValue = (String) listView.getItemAtPosition(position);
-                bluetoothManager.connectTo(itemValue);
+                btClient.connect(itemValue);
             }
         });
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
@@ -51,11 +53,13 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     }
 
     public void disconnect(View v)  {
-        try {
-            Toast.makeText(getApplicationContext(), bluetoothManager.disconnect(),Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if (type.equals("client")) {
+            btClient.disconnect();
+        }else{
+            btServer.disconnect();
         }
+        Toast.makeText(getApplicationContext(), "Disconnected",Toast.LENGTH_LONG).show();
     }
 
     public void clientToClient(View v)  {
@@ -63,20 +67,34 @@ public class MainActivity extends BluetoothActivity implements MessageReceiveLis
     }
 
     public void devicelist(View v) {
-        Toast.makeText(getApplicationContext(), bluetoothManager.getAllConnectedDevices(),Toast.LENGTH_LONG).show();
+        int noOfDevices;
+        if (type.equals("client")) {
+            noOfDevices = btClient.getAllConnectedDevices();
+        }else{
+            noOfDevices = btServer.getAllConnectedDevices();
+        }
+
+        Toast.makeText(getApplicationContext(), noOfDevices, Toast.LENGTH_LONG).show();
     }
 
     public void start(View v){
         enableBluetooth();
-        bluetoothManager = BluetoothManager.createInstance(type);
+        bluetoothManager = BluetoothManager.getInstance();
+
+        if (type.equals("client")) {
+            btClient = (BTClient) bluetoothManager.createSocket(type);
+        }else{
+            btServer = (BTServer) bluetoothManager.createSocket(type);
+        }
+
     }
 
     public void send(View v) {
         if (type.equals("client")) {
-            bluetoothManager.sendText(et1.getText().toString());
+            btClient.sendText(et1.getText().toString());
         }
         if (type.equals("server")) {
-            bluetoothManager.sendText(et1.getText().toString(),Integer.parseInt(et2.getText().toString()));
+            btServer.sendText(et1.getText().toString(), Integer.parseInt(et2.getText().toString()));
         }
     }
 

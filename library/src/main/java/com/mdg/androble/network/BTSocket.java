@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Deepankar Agrawal
  */
 
-abstract class BTSocket {
+public abstract class BTSocket {
 
     protected BluetoothAdapter bluetoothAdapter;
     protected ArrayList<UUID> uuids;
