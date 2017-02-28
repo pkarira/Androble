@@ -1,4 +1,4 @@
-package com.mdg.androble;
+package com.mdg.androble.listeners;
 
 /**
  * Created by this pc on 04-10-2016.
@@ -6,5 +6,5 @@ package com.mdg.androble;
 
 public interface MessageReceiveListener {
 
-    void onMessageReceived(int id, String message);
+    void onReceive(int id, String message);
 }

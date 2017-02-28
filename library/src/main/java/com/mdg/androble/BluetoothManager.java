@@ -1,113 +1,143 @@
 package com.mdg.androble;
 
-import android.bluetooth.BluetoothSocket;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import com.mdg.androble.listeners.ConnectionStatusListener;
+import com.mdg.androble.listeners.MessageReceiveListener;
+import com.mdg.androble.network.BTClient;
+import com.mdg.androble.network.BTServer;
+import com.mdg.androble.network.BTSocket;
 
 /**
- * Created by this pc on 02-08-2016.
+ * @author Pulkit Karira, Deepankar Agrawal
+ *
+ * This class act as main manager for server and client sockets.
  */
+
 public class BluetoothManager {
 
     public enum ConnectionType {
         CLIENT, SERVER
     }
 
-    public ConnectionType connectionType;
-    //BluetoothSocket socketForClient;
-    public static ServerSocket serverSocket;
-    ClientSocket clientSocket;
-    public static Object recieve_msg;
-    public static Object device_list;
-    private static BluetoothManager bManager = null;
+    public  BluetoothAdapter bluetoothAdapter;
+    private BTClient btClient;
+    private BTServer btServer;
+
+    private ConnectionType connectionType;
+
+    private MessageReceiveListener messageReceiveListener;
+    private ConnectionStatusListener connectionStatusListener;
+
+    /**
+     * Singleton instance of this class
+     */
+    private static BluetoothManager bluetoothManager = null;
 
 
     private BluetoothManager() {
-        serverSocket = new ServerSocket();
-        clientSocket = new ClientSocket();
-    }
-
-    public static BluetoothManager getInstance() {
-        if (bManager == null) {
-            bManager = new BluetoothManager();
-        }
-        return bManager;
     }
 
     /**
      *
-     * @param msgObject takes msg obj
-     * @param listObject dcs
-     * @param connectionType sdfd
+     * @return BluetoothManger instance
+     *
+     * returns null if BluetoothManager is not initialized.
      */
-    public void init(Object msgObject,Object listObject, ConnectionType connectionType){
-        setType(connectionType);
-        setListObject(listObject);
-        setMessageObject(msgObject);
+    public static BluetoothManager getInstance() {
+        if (bluetoothManager == null){
+            bluetoothManager = new BluetoothManager();
+        }
+        return bluetoothManager;
     }
 
-    public void setType(ConnectionType connectionType) {
+    /**
+     * @param connectionType type of connection SERVER or CLIENT
+     *
+     * @return instance of server or client that is created
+     *
+     * Initializes BluetoothManager and socket instance to be used in connection
+     */
+    public BTSocket createSocket(ConnectionType connectionType){
+        return createSocket(null, connectionType);
+    }
+
+    /**
+     *
+     * @param context context of class
+     * @param connectionType type of connection SERVER or CLIENT
+     *
+     * @return instance of server or client that is created
+     *
+     * Initializes BluetoothManager and socket instance to be used in connection
+     */
+    public BTSocket createSocket(Context context, ConnectionType connectionType){
+
         this.connectionType = connectionType;
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if(context!=null){
+            if(context instanceof ConnectionStatusListener){
+                setOnCallStatusListener((ConnectionStatusListener) context);
+            }
+            if(context instanceof MessageReceiveListener){
+                setOnMessageReceiveListener((MessageReceiveListener) context);
+            }
+        }
+
+        startConnection();
+
+        return bluetoothManager.returnSocket();
     }
 
-    public void setListObject(Object myObject)
-
-    {
-        device_list = myObject;
+    public BTClient getBTClient() {
+        return btClient;
     }
 
-    public void setMessageObject(Object myObject) {
-        recieve_msg = myObject;
+    public BTServer getBTServer() {
+        return btServer;
     }
 
-    void scanClients() {
-        serverSocket.startConnection(BluetoothActivity.bluetoothAdapter);
+    public ConnectionType getConnectionType() {
+        return connectionType;
     }
 
-    public void connectTo(String s) {
-        clientSocket.startConnection(BluetoothActivity.bluetoothAdapter, s);
+    /**
+     *
+     * @param messageReceiveListener instance of the listener class
+     */
+    public void setOnMessageReceiveListener(MessageReceiveListener messageReceiveListener){
+        this.messageReceiveListener = messageReceiveListener;
     }
 
-    public void sendText(String s) {
-        if (clientSocket.check.equals(("connected")) && connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.write(SocketManager.my_id + ":" + s);
+    /**
+     *
+     * @param connectionStatusListener instance of listener class
+     */
+    public void setOnCallStatusListener(ConnectionStatusListener connectionStatusListener){
+        this.connectionStatusListener = connectionStatusListener;
+    }
+
+    /**
+     * starts connection process depending on type of connection
+     */
+    private void startConnection(){
+        if(connectionType == ConnectionType.SERVER){
+            btServer = new BTServer(connectionStatusListener,
+                    messageReceiveListener);
+            btServer.connect();
+        }else{
+            btClient = new BTClient();
         }
     }
 
-    public String getId() {
-        return SocketManager.my_id;
-    }
-
-    public void sendText(String s1, int id) {
-        if (id <= (serverSocket.socketCounter + 1)) {
-            serverSocket.write(s1, id);
+    private BTSocket returnSocket(){
+        if(connectionType == ConnectionType.SERVER){
+           return btServer;
+        }else{
+            return btClient;
         }
     }
 
-    public void clientToClient(String s1, int id) {
-        if (id <= (serverSocket.socketCounter + 1)) {
-            clientSocket.write("<" + id + ">" + s1);
-        }
-    }
-
-    public String getAllConnectedDevices() {
-        if (connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.write("(" + SocketManager.my_id + ")");
-            return null;
-        } else {
-            return SocketManager.sb.substring(0);
-        }
-    }
-
-    public String disconnect() throws IOException {
-        if (connectionType.equals(ConnectionType.CLIENT)) {
-            clientSocket.disconnectClient();
-            return "DISCONNECTED";
-        } else if (connectionType.equals(ConnectionType.SERVER)) {
-            serverSocket.disconnectServer();
-            return "DISCONNECTED";
-        }
-        return null;
-    }
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">bluetooth_Library2</string>
+
+    <string name="discoverable_enable">"Failed to enable discoverable mode."</string>
+    <string name="discoverable_disable">Your device is now discoverable.</string>
+    <string name="bluetooth_enable">Bluetooth enabled.\nScanning for peers.</string>
+    <string name="bluetooth_disable">Bluetooth is not enabled.</string>
+    <string name="bluetooth_start_failed">Failed to discover devices. Please turn on Bluetooth.</string>
+
 </resources>
