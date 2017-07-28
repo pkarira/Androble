@@ -7,6 +7,7 @@
  
  <h3>Dependency</h3>
  Add dependency to build.gradle of your app
+ 
  ```java
  dependencies
  {
